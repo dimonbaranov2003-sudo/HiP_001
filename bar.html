@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<meta content="#241611" name="theme-color"/>
+<title>Барная карта · Демо</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&amp;family=Manrope:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#241611;
+    --surface:#241811;
+    --surface-2:#2C2015;
+    --ink:#F4ECDF;
+    --muted:#B49C89;
+    --line:rgba(200,138,78,0.28);
+    --accent:#C88A4E;
+    --accent-ink:#E8B57E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background-color:var(--bg);
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
+    background-size:420px auto, 420px auto;
+    background-position:top center, top center;
+    background-repeat:repeat, repeat;
+    color:var(--ink);
+    font-family:'Manrope',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:48px;
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif;}
+
+  /* Скрытые радио, управляющие вкладками-фильтрами — работают даже без JS. */
+  .tab-radio{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); overflow:hidden; white-space:nowrap;
+  }
+
+  header.topbar{
+    border-bottom:1px solid var(--line);
+    padding:20px 16px 16px;
+  }
+  .brand{display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:10px; text-align:center;}
+  .brand h1{margin:0;}
+  .brand-logo{height:34px; width:auto; display:block;}
+  .brand .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.09em;
+    color:var(--accent); text-transform:uppercase;
+  }
+  .tagline{
+    display:block; text-align:center; font-family:'Manrope',sans-serif; font-size:.76rem;
+    color:var(--muted); line-height:1.5; margin:0 auto 16px; max-width:340px;
+  }
+
+  /* ---------- Вход по анимированному переходу с главной ---------- */
+  /* Логотип уже "долетел" на своё место и виден сразу — остальное содержимое
+     мягко проявляется вокруг него, без тёмного экрана поверх страницы. */
+  .tagline, .pills, main, footer{
+    transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);
+  }
+  .pills{ transition-delay:.06s; }
+  main{ transition-delay:.12s; }
+  footer{ transition-delay:.18s; }
+  html.entry-veil .tagline,
+  html.entry-veil .pills,
+  html.entry-veil main,
+  html.entry-veil footer{
+    opacity:0; transform:translateY(10px);
+  }
+
+  .pills{display:flex; flex-wrap:wrap; justify-content:center; gap:8px;}
+  .pill{
+    flex:0 0 auto; font-family:'Manrope',sans-serif; font-size:.76rem; font-weight:700;
+    padding:9px 14px; border-radius:9px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--ink); white-space:nowrap; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  @media (hover:hover){
+    .pill:hover{border-color:var(--accent);}
+  }
+
+  main{padding:26px 16px 8px; max-width:560px; margin:0 auto;}
+
+  .demo-box{
+    border:1.5px dashed var(--line); border-radius:18px;
+    padding:56px 22px 50px; text-align:center;
+    background:rgba(244,236,223,0.025);
+  }
+  .demo-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 14px;
+  }
+  .demo-title{
+    font-family:'Fraunces',serif; font-weight:500; font-size:1.34rem;
+    color:var(--ink); margin:0 0 12px; letter-spacing:-.01em;
+  }
+  .demo-text{
+    font-family:'Manrope',sans-serif; font-size:.85rem; color:var(--muted);
+    line-height:1.6; max-width:300px; margin:0 auto;
+  }
+
+  /* ---------- Вкладки-фильтры на чистом CSS ---------- */
+  #tab-lemon:checked ~ main .demo-panel:not([data-cat="lemon"]){display:none;}
+  #tab-lemon:checked ~ header label[for="tab-lemon"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  #tab-cocktail:checked ~ main .demo-panel:not([data-cat="cocktail"]){display:none;}
+  #tab-cocktail:checked ~ header label[for="tab-cocktail"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  #tab-calc:checked ~ main .demo-panel:not([data-cat="calc"]){display:none;}
+  #tab-calc:checked ~ header label[for="tab-calc"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+
+  /* ---------- Подпись: тап "d.b wish" — контакты проявляются под ней ---------- */
+  .sig{border:none; padding:0; margin-top:8px; text-align:center;}
+  .sig-input{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); overflow:hidden; white-space:nowrap;
+  }
+  .sig-name{
+    display:inline-block; cursor:pointer; padding:4px 3px;
+    -webkit-tap-highlight-color:transparent;
+    transition:opacity .2s ease;
+  }
+  .sig-logo{height:24px; width:auto; display:block;}
+  @media (hover:hover){
+    .sig-name:hover{ opacity:.75; }
+  }
+  .sig-reveal{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    max-height:0; opacity:0; filter:blur(6px); transform:translateY(-4px) scale(.96);
+    overflow:hidden; pointer-events:none;
+    transition:max-height 1.15s cubic-bezier(.16,1,.3,1),
+               opacity 1.05s ease .12s,
+               filter 1.05s ease .12s,
+               transform 1.1s cubic-bezier(.16,1,.3,1) .08s;
+  }
+  .sig-input:checked ~ .sig-reveal{
+    max-height:70px; opacity:1; filter:blur(0); transform:translateY(0) scale(1);
+    pointer-events:auto; margin-top:6px;
+  }
+  .sig-tg{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:600; font-size:.8rem;
+    letter-spacing:.03em; color:var(--accent-ink); text-decoration:none;
+    border-bottom:1px dotted var(--line);
+  }
+  .sig-caption{
+    font-family:'Manrope',sans-serif; font-size:.66rem; color:var(--muted);
+    max-width:260px; line-height:1.45;
+  }
+  footer{
+    max-width:560px; margin:34px auto 0; padding:0 18px; color:var(--muted);
+    font-size:.74rem; line-height:1.5; text-align:center;
+  }
+
+  /* ---------- Премиксы Б/А: плашки как в чайной карте, в тёмной палитре ---------- */
+  #tab-premix:checked ~ main .demo-panel:not([data-cat="premix"]){display:none;}
+  #tab-premix:checked ~ header label[for="tab-premix"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  .cat-head{display:flex; align-items:center; gap:8px; margin:0 0 6px 2px;}
+  .cat-head .dot{width:10px; height:10px; border-radius:50%; background:var(--accent);}
+  .cat-head h2{font-size:1.08rem; font-weight:600; margin:0; letter-spacing:-.01em; color:var(--ink);}
+  .cat-head .n{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted);}
+  .cat-note{font-size:.76rem; color:var(--muted); line-height:1.5; margin:0 2px 14px;}
+  details.card{
+    display:block; background:var(--surface); border:1px solid var(--line);
+    border-left:4px solid var(--dot); border-radius:8px; margin-bottom:9px; overflow:hidden;
+    transition:box-shadow .18s ease, transform .18s ease;
+  }
+  @media (hover:hover){ details.card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.35); transform:translateY(-1px);} }
+  summary.card-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    cursor:pointer; padding:12px 12px 10px; list-style:none; -webkit-tap-highlight-color:transparent;
+  }
+  summary.card-head::-webkit-details-marker{display:none;}
+  summary.card-head::marker{content:'';}
+  .card-name{font-family:'Fraunces',serif; font-size:1.02rem; font-weight:500; line-height:1.25;}
+  .prep-note{font-family:'Manrope',sans-serif; font-size:.76rem; font-weight:400; color:var(--muted); font-style:italic;}
+  .chev{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:.85rem; transition:transform .15s ease; flex:0 0 auto;}
+  details.card[open] .chev{transform:rotate(180deg);}
+  .card-content{height:0; overflow:hidden; transition:height .32s cubic-bezier(.4,0,.2,1);}
+  details.card[open] .card-content{height:auto;}
+  .card-content-inner{overflow:hidden; contain:content;}
+  .badges{display:flex; flex-wrap:wrap; gap:5px; padding:0 12px 11px;}
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; font-weight:600;
+    color:var(--dot); border:1px solid var(--dot); border-radius:4px; padding:2px 7px;
+    background:color-mix(in srgb, var(--dot) 10%, transparent);
+  }
+  .ing-table{width:100%; border-collapse:collapse; font-size:.86rem;}
+  .ing-table th{
+    text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:.62rem;
+    color:var(--muted); padding:6px 8px; border-top:1px solid var(--line);
+    background:var(--surface-2); white-space:nowrap;
+  }
+  .ing-table th:first-child{text-align:left; padding-left:10px;}
+  .ing-table td{padding:8px; border-top:1px solid var(--line); vertical-align:top;}
+  .ing-table td:first-child{padding-left:10px;}
+  .ing-table tr:nth-child(odd) td{background:rgba(255,255,255,0.02);}
+  .ing-table tr.total td{font-weight:700; background:color-mix(in srgb, var(--dot) 9%, transparent);}
+  .ing-amt{font-family:'IBM Plex Mono',monospace; font-size:.82rem; text-align:right; white-space:nowrap; font-weight:500;}
+  .decor-box{margin:12px 12px 12px; padding:9px 11px; background:var(--surface-2); border-radius:6px; border:1px solid var(--line);}
+  .decor-title{font-family:'IBM Plex Mono',monospace; font-size:.64rem; font-weight:600; color:var(--dot); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;}
+  .decor-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px;}
+  .decor-list li{display:flex; justify-content:space-between; gap:10px; font-size:.83rem; line-height:1.4;}
+  .decor-val{font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--muted); white-space:nowrap; text-align:right; flex:0 0 auto;}
+  .card-note{margin:0 12px 12px; font-size:.76rem; color:var(--muted); font-style:italic; line-height:1.45;}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  // Если пришли по анимированному переходу с главной — логотип уже на месте,
+  // его не прячем вообще. Прячем только остальное содержимое (класс на <html>,
+  // задаётся синхронно до первой отрисовки) и мягко проявляем его чуть позже —
+  // без единого тёмного кадра поверх страницы.
+  var entering = false;
+  try{ entering = sessionStorage.getItem('fly:bar.html') === '1'; sessionStorage.removeItem('fly:bar.html'); }catch(e){}
+  if(entering){
+    document.documentElement.classList.add('entry-veil');
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function reveal(){ document.documentElement.classList.remove('entry-veil'); }
+    if(reduceMotion){ reveal(); }
+    else{
+      window.addEventListener('load', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ setTimeout(reveal, 90); }); });
+      });
+    }
+  }
+})();
+</script>
+<input checked="" class="tab-radio" id="tab-lemon" name="barcat" type="radio"/><input class="tab-radio" id="tab-cocktail" name="barcat" type="radio"/><input class="tab-radio" id="tab-calc" name="barcat" type="radio"/><input class="tab-radio" id="tab-premix" name="barcat" type="radio"/>
+<header class="topbar">
+<div class="brand">
+<h1><img alt="Барная карта" class="brand-logo" src="logo-bar-wide-light.png"/></h1>
+<span class="tag">Тестовая версия</span>
+</div>
+<span class="tagline">Демо-страница: структура и переход уже готовы, содержимое разделов — впереди</span>
+<nav class="pills">
+<label class="pill" for="tab-lemon">Домашние лимонады</label>
+<label class="pill" for="tab-cocktail">Коктейли</label>
+<label class="pill" for="tab-premix">Премиксы Б/А</label>
+<label class="pill" for="tab-calc">Калькулятор</label>
+</nav>
+</header>
+<main id="app">
+<section class="demo-panel" data-cat="lemon">
+<div class="demo-box">
+<p class="demo-eyebrow">Раздел в разработке</p>
+<h2 class="demo-title">Домашние лимонады</h2>
+<p class="demo-text">Рецепты и пропорции лимонадов ожидаются в будущем.</p>
+</div>
+</section>
+<section class="demo-panel" data-cat="cocktail">
+<div class="demo-box">
+<p class="demo-eyebrow">Раздел в разработке</p>
+<h2 class="demo-title">Коктейли</h2>
+<p class="demo-text">Карта коктейлей с рецептурами ожидается в будущем.</p>
+</div>
+</section>
+<section class="demo-panel" data-cat="premix">
+<div class="cat-head"><span class="dot"></span><h2>Премиксы Б/А</h2><span class="n">4</span></div>
+<p class="cat-note">В премиксе только основа: без воды, льда, украшений. Перед розливом бутылку встряхнуть, хранить в холодильнике.</p>
+<details class="card" style="--dot:#D4687A">
+<summary class="card-head"><span class="card-name">Малина-Гранат<span class="prep-note"> · 1 л = 5 порций</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Без воды и украшений</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 лимонад</th><th>Бутылка · 5 порций</th></tr></thead><tbody><tr><td class="ing-name">Пюре Малина</td><td class="ing-amt">70мл</td><td class="ing-amt">350мл</td></tr><tr><td class="ing-name">Сироп Клубника</td><td class="ing-amt">25мл</td><td class="ing-amt">125мл</td></tr><tr><td class="ing-name">Наршараб микс ПФ</td><td class="ing-amt">60мл</td><td class="ing-amt">300мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">30мл</td><td class="ing-amt">150мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">185мл</td><td class="ing-amt">925мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 лимонада</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">185 мл</span></li><li><span class="decor-name">Лёд п/ф</span><span class="decor-val">200 г</span></li><li><span class="decor-name">Газ-вода</span><span class="decor-val">до 1000 мл</span></li><li><span class="decor-name">Гранат очищ. ПФ (украшение)</span><span class="decor-val">6 г</span></li></ul></div>
+
+</div></div></details><details class="card" style="--dot:#E0A040">
+<summary class="card-head"><span class="card-name">Манго-Апельсин<span class="prep-note"> · 1 л = 5 порций</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Без воды и украшений</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 лимонад</th><th>Бутылка · 5 порций</th></tr></thead><tbody><tr><td class="ing-name">Пюре Манго</td><td class="ing-amt">60мл</td><td class="ing-amt">300мл</td></tr><tr><td class="ing-name">Сироп Spice Bazar</td><td class="ing-amt">50мл</td><td class="ing-amt">250мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">75мл</td><td class="ing-amt">375мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">185мл</td><td class="ing-amt">925мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 лимонада</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">185 мл</span></li><li><span class="decor-name">Сок розлив в асс. (отдельно)</span><span class="decor-val">120 мл</span></li><li><span class="decor-name">Лёд п/ф</span><span class="decor-val">200 г</span></li><li><span class="decor-name">Газ-вода</span><span class="decor-val">до 1000 мл</span></li><li><span class="decor-name">Апельсин (кольца)</span><span class="decor-val">10 г</span></li></ul></div>
+<p class="card-note">Сок в премикс не входит: его доливают отдельно в каждый лимонад.</p>
+</div></div></details><details class="card" style="--dot:#8FB07A">
+<summary class="card-head"><span class="card-name">Груша-Кинза<span class="prep-note"> · 1 л = 5–6 порций</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Без воды и украшений</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 лимонад</th><th>Бутылка · 5 порций</th><th>Бутылка · 6 порций</th></tr></thead><tbody><tr><td class="ing-name">Пюре Груша</td><td class="ing-amt">90мл</td><td class="ing-amt">450мл</td><td class="ing-amt">540мл</td></tr><tr><td class="ing-name">Сироп Бузина</td><td class="ing-amt">25мл</td><td class="ing-amt">125мл</td><td class="ing-amt">150мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">50мл</td><td class="ing-amt">250мл</td><td class="ing-amt">300мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">165мл</td><td class="ing-amt">825мл</td><td class="ing-amt">990мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 лимонада</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">165 мл</span></li><li><span class="decor-name">Лёд п/ф</span><span class="decor-val">200 г</span></li><li><span class="decor-name">Газ-вода</span><span class="decor-val">до 1000 мл</span></li><li><span class="decor-name">Кинза зачищ. ПФ (украшение)</span><span class="decor-val">15 г</span></li><li><span class="decor-name">Груша (украшение)</span><span class="decor-val">40 г</span></li></ul></div>
+
+</div></div></details><details class="card" style="--dot:#B889B8">
+<summary class="card-head"><span class="card-name">Маракуя-Роза<span class="prep-note"> · 1 л = 5–6 порций</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Без воды и украшений</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 лимонад</th><th>Бутылка · 5 порций</th><th>Бутылка · 6 порций</th></tr></thead><tbody><tr><td class="ing-name">Пюре Маракуя</td><td class="ing-amt">60мл</td><td class="ing-amt">300мл</td><td class="ing-amt">360мл</td></tr><tr><td class="ing-name">Сироп Роза</td><td class="ing-amt">50мл</td><td class="ing-amt">250мл</td><td class="ing-amt">300мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">40мл</td><td class="ing-amt">200мл</td><td class="ing-amt">240мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">150мл</td><td class="ing-amt">750мл</td><td class="ing-amt">900мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 лимонада</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">150 мл</span></li><li><span class="decor-name">Лёд п/ф</span><span class="decor-val">200 г</span></li><li><span class="decor-name">Газ-вода</span><span class="decor-val">до 1000 мл</span></li><li><span class="decor-name">Огурец св. (пробить в блендере)</span><span class="decor-val">120 г</span></li><li><span class="decor-name">Мята св. (украшение)</span><span class="decor-val">2 г</span></li></ul></div>
+
+</div></div></details>
+</section>
+<section class="demo-panel" data-cat="calc">
+<div class="demo-box">
+<p class="demo-eyebrow">Раздел в разработке</p>
+<h2 class="demo-title">Калькулятор</h2>
+<p class="demo-text">Инструмент для пересчёта пропорций ожидается в будущем.</p>
+</div>
+</section>
+</main>
+<footer>
+  Премиксы в этой карте рассчитаны по ТТК из iiko. Если на вашей точке уже используются премиксы, отличающиеся от указанных, и вы хотите хранить их в таком же формате — можете отправить заявку на добавление под вашу точку.
+</footer>
+
+<footer class="sig">
+  <input type="checkbox" id="sig-toggle" class="sig-input"/>
+  <label for="sig-toggle" class="sig-name"><img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/></label>
+  <div class="sig-reveal">
+    <a class="sig-tg" href="https://t.me/wish_tgm" target="_blank" rel="noopener">@wish_tgm</a>
+    <span class="sig-caption">Пишите по предложениям и изменениям под ваши конкретные желания</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Аккордеон как в чайной карте: открытая плашка закрывает остальные.
+  var cards=Array.prototype.slice.call(document.querySelectorAll('details.card'));
+  function contentOf(d){return d.querySelector(':scope > .card-content');}
+  function closeCard(d){
+    if(!d.hasAttribute('open'))return;
+    var c=contentOf(d);
+    c.style.transition='none'; c.style.height=c.scrollHeight+'px'; c.getBoundingClientRect();
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+      c.style.transition='height .3s cubic-bezier(.4,0,.2,1)'; c.style.height='0px';
+    });});
+    var onEnd=function(e){
+      if(e.target!==c||e.propertyName!=='height')return;
+      c.removeEventListener('transitionend',onEnd);
+      d.removeAttribute('open'); c.style.transition=''; c.style.height='';
+    };
+    c.addEventListener('transitionend',onEnd);
+  }
+  function openCard(d){
+    if(d.hasAttribute('open'))return;
+    d.setAttribute('open','');
+    var c=contentOf(d);
+    c.style.transition='none'; c.style.height='0px'; c.getBoundingClientRect();
+    var target=c.scrollHeight;
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+      c.style.transition='height .36s cubic-bezier(.4,0,.2,1)'; c.style.height=target+'px';
+    });});
+    var onEnd=function(e){
+      if(e.target!==c||e.propertyName!=='height')return;
+      c.removeEventListener('transitionend',onEnd);
+      c.style.transition=''; c.style.height='auto';
+      var r=d.getBoundingClientRect(), h=window.innerHeight;
+      var top=r.height<=h?(h-r.height)/2:10, delta=r.top-top;
+      if(Math.abs(delta)>4)window.scrollBy({top:delta,behavior:'smooth'});
+    };
+    c.addEventListener('transitionend',onEnd);
+  }
+  cards.forEach(function(d){
+    var sm=d.querySelector(':scope > summary'); if(!sm)return;
+    sm.addEventListener('click',function(e){
+      e.preventDefault();
+      if(!d.hasAttribute('open')){cards.forEach(function(o){if(o!==d)closeCard(o);});openCard(d);}
+      else closeCard(d);
+    });
+  });
+})();
+</script>
+</body>
+</html>
