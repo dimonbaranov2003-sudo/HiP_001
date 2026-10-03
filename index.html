@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<meta content="#161210" name="theme-color"/>
+<title>Wish Ember · Хачо и Пури / Пхали-Хинкали</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&amp;family=Manrope:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --page-bg:#161210;
+    --panel-bg:#1B1613;
+    --panel-line:#2C221B;
+    --ink:#F4ECDF;
+    --muted:#96877A;
+    --accent:#C88A4E;
+    --accent-line:rgba(200,138,78,0.30);
+
+    --tea-surface:#F4ECDF;
+    --tea-ink:#332C2C;
+    --tea-muted:#6D6262;
+
+    --bar-surface:#241611;
+    --bar-line:rgba(200,138,78,0.28);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:'Manrope',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:48px 16px 60px;
+  }
+  .wrap{max-width:520px; margin:0 auto;}
+
+  /* ---------- Restaurant panel ---------- */
+  .rest-panel{
+    background:var(--panel-bg); border:1px solid var(--panel-line); border-radius:20px;
+    padding:22px 18px 20px; margin-bottom:24px;
+  }
+  .rest-panel:first-child{margin-top:0;}
+  .rest-panel:last-child{margin-bottom:0;}
+  .rest-name{
+    font-family:'Manrope',sans-serif; font-size:1.32rem; font-weight:700; margin:0;
+    letter-spacing:-.02em; line-height:1.15; text-align:center; color:var(--ink);
+  }
+  .rest-logo{height:56px; width:auto; display:block; margin:0 auto;}
+  .divider{
+    width:100%; height:1px; background:var(--panel-line); margin:16px 0 16px;
+  }
+  .cards{display:flex; flex-direction:column; gap:10px;}
+
+  a.card{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border-radius:14px;
+    padding:16px 18px; text-decoration:none;
+    transition:border-color .15s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  @media (hover:hover){
+    a.card:hover{ transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,0.28); }
+  }
+
+  /* Tea card: the bright cream identity, with the recolored medallion texture as a
+     faint watermark so the ornament reads without fighting the logo. */
+  a.card.card-tea{
+    position:relative; justify-content:center;
+    background-color:var(--tea-surface);
+    background-image:linear-gradient(rgba(244,236,223,0.37), rgba(244,236,223,0.37)), url("bg-chai.jpg");
+    background-size:460px auto, 460px auto;
+    background-position:top center, top center;
+    background-repeat:repeat, repeat;
+    color:var(--tea-ink);
+  }
+  .card-name{font-family:'Fraunces',serif; font-size:1.08rem; font-weight:500;}
+  .card-text-center{display:flex; flex-direction:column; align-items:center; gap:7px; width:100%;}
+  .tea-logo{height:25px; width:auto; display:block;}
+  .tea-logo-muted{filter:grayscale(1) opacity(.5);}
+  .card-arrow-corner{
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace; font-size:1rem; color:var(--tea-muted);
+  }
+  .card-text{display:flex; flex-direction:column; gap:3px;}
+  .card-date{
+    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.04em;
+    color:var(--tea-muted);
+  }
+
+  /* Bar card: the copper-warmed dark identity, cocktail-line watermark texture. */
+  a.card.card-bar{
+    position:relative; justify-content:center;
+    background-color:var(--bar-surface);
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
+    background-size:420px auto, 420px auto;
+    background-position:top center, top center;
+    background-repeat:repeat, repeat;
+    border:1px solid var(--bar-line);
+  }
+  .bar-logo{height:26px; width:auto; display:block;}
+  a.card.card-bar .card-date{color:var(--accent);}
+  a.card.card-bar .card-arrow-corner{color:var(--accent);}
+
+  /* Plain "nothing here yet" placeholder — used only where a section genuinely
+     hasn't been started (Пхали-Хинкали, both cards). */
+  .card.disabled{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:transparent; border:1.5px dashed var(--panel-line); border-radius:14px;
+    padding:16px 18px; color:var(--muted); cursor:default;
+  }
+  .card.disabled .card-name{color:var(--muted); font-weight:400;}
+  .card.disabled .card-date{color:var(--muted);}
+
+  footer{
+    max-width:520px; margin:36px auto 0; padding:0 18px; color:var(--muted);
+    font-size:.74rem; line-height:1.5; text-align:center;
+  }
+
+  /* ---------- Signature: tap "d.b wish" and contact details fade in beneath it ---------- */
+  .sig-top{
+    position:relative; text-align:center;
+    padding:0 16px 28px; min-height:44px;
+  }
+  .sig-logo-btn{
+    display:inline-block; cursor:pointer; padding:4px 6px; border:none; background:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:opacity .3s ease;
+  }
+  .sig-logo{height:26px; width:auto; display:block;}
+  @media (hover:hover){
+    .sig-logo-btn:hover{ opacity:.75; }
+  }
+  .sig-top.sig-open .sig-logo-btn{ opacity:0; pointer-events:none; }
+  .sig-msg{
+    position:absolute; top:0; left:0; width:100%; padding:0 16px;
+    transform:translateY(4px) scale(.96);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    opacity:0; pointer-events:none;
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .sig-top.sig-open .sig-msg{
+    opacity:1; transform:translateY(0) scale(1); pointer-events:auto;
+  }
+  .sig-tg{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:600; font-size:.8rem;
+    letter-spacing:.03em; color:var(--accent); text-decoration:none;
+    border-bottom:1px dotted var(--accent-line);
+  }
+  .sig-caption{
+    font-family:'Manrope',sans-serif; font-size:.66rem; color:var(--muted);
+    max-width:260px; line-height:1.45;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="sig-top" id="sigTop">
+  <button aria-label="Контакты" class="sig-logo-btn" id="sigLogoBtn" type="button">
+    <img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/>
+  </button>
+  <div class="sig-msg">
+    <a class="sig-tg" href="https://t.me/wish_tgm" target="_blank" rel="noopener">@wish_tgm</a>
+    <span class="sig-caption">Пишите по предложениям и изменениям под ваши конкретные желания</span>
+  </div>
+</div>
+
+<section class="rest-panel">
+<h2 class="rest-name"><img class="rest-logo" src="logo-hacho-puri-light.png" alt="Хачо и Пури"/></h2>
+<div class="divider"></div>
+<div class="cards">
+<a class="card card-tea" href="chai.html" data-final-logo-height="36" data-final-logo-top="12" data-tile-width="460">
+<span class="card-text-center">
+<img class="tea-logo" src="logo-chai-wide.png" alt="Чайная карта"/>
+<span class="card-date">27.07.2026</span>
+</span>
+<span class="card-arrow-corner">→</span>
+</a>
+<a class="card card-bar" href="bar.html" data-final-logo-height="34" data-final-logo-top="20" data-tile-width="420">
+<span class="card-text-center">
+<img class="bar-logo" src="logo-bar-wide-light.png" alt="Барная карта"/>
+<span class="card-date">Демо</span>
+</span>
+<span class="card-arrow-corner">→</span>
+</a>
+</div>
+</section>
+
+<section class="rest-panel">
+<h2 class="rest-name">Пхали-Хинкали</h2>
+<div class="divider"></div>
+<div class="cards">
+<div class="card disabled">
+<span class="card-text-center">
+<img class="tea-logo tea-logo-muted" src="logo-chai-wide.png" alt="Чайная карта"/>
+<span class="card-date">Скоро</span>
+</span>
+</div>
+<div class="card disabled">
+<span class="card-text">
+<span class="card-name">Барная карта</span>
+<span class="card-date">Скоро</span>
+</span>
+</div>
+</div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var EASE = 'cubic-bezier(.4,0,.2,1)';
+  var TOTAL_MS = 1100;        // единая длительность роста/сжатия кнопки — двигается ВСЁ разом, с этой же скоростью едет и текст
+  var TEXT_FADE_MS = 240;     // сколько длится исчезновение текста в самом конце полёта
+  var CLONE_FADE_MS = 380;    // при возврате: плавное растворение клона в настоящую (уже с узором) кнопку — без щелчка
+  var OVERSCAN = 24;          // запас за края экрана — гарантирует идеальную заливку без шва по краю
+  var FADE_MS = 360;          // длительность угасания/проявления каждого из остальных элементов
+  var FADE_STAGGER_MS = 130;  // и шаг между ними — один за другим, а не разом
+  var FADE_OUT_BASE_MS = 480; // при уходе: пауза перед первым угасанием — даём кнопке время подрасти
+
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var ORIGINAL_THEME_COLOR = themeMeta ? themeMeta.getAttribute('content') : null;
+  function setThemeColor(c){
+    if(themeMeta && c) themeMeta.setAttribute('content', c);
+  }
+
+  // Список карточек, которые в момент ухода со страницы остались "подвешены"
+  // в летящем состоянии. Если браузер восстановит эту страницу из bfcache при
+  // нажатии "назад" — здесь будет запись, и мы аккуратно соберём карточку
+  // обратно, без перезагрузки.
+  var activeFlights = [];
+
+  function attachFly(link){
+    link.addEventListener('click', function(e){
+      // Открытие в новой вкладке / модификаторы — не трогаем, пусть работает как обычная ссылка
+      if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduceMotion) return; // обычный переход без анимации
+
+      e.preventDefault();
+      var targetHref = link.getAttribute('href');
+      var finalLogoH = parseInt(link.getAttribute('data-final-logo-height'), 10) || 30;
+      var finalLogoTop = parseInt(link.getAttribute('data-final-logo-top'), 10);
+      if(isNaN(finalLogoTop)) finalLogoTop = 14;
+      var tileW = parseInt(link.getAttribute('data-tile-width'), 10) || 460;
+
+      // Синхронизируем цвет системной шторки браузера с цветом, в который
+      // вот-вот превратится весь экран — чтобы она не переключалась рывком
+      // отдельно от нашей анимации.
+      setThemeColor(getComputedStyle(link).backgroundColor);
+
+      var rect = link.getBoundingClientRect();
+      var clone = link.cloneNode(true);
+      clone.classList.add('fly-clone');
+      clone.removeAttribute('href');
+      clone.removeAttribute('data-final-logo-height');
+      clone.removeAttribute('data-final-logo-top');
+      clone.style.position = 'fixed';
+      clone.style.margin = '0';
+      clone.style.top = rect.top + 'px';
+      clone.style.left = rect.left + 'px';
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.zIndex = '99999';
+      clone.style.pointerEvents = 'none';
+      clone.style.borderRadius = getComputedStyle(link).borderRadius;
+      clone.style.willChange = 'top, left, width, height';
+      // Узор фона задан в фиксированных пикселях, поэтому при росте коробки
+      // он не тянется и не даёт швов — просто становится видно больше повторов
+      // того же узора, что и на самой странице назначения. НО background-position
+      // считается относительно рамки самого элемента, а не экрана — а рамка на
+      // финальном кадре уходит в отрицательные координаты (запас за края экрана
+      // против шва в Telegram). Поэтому точку отсчёта узора ниже компенсируем
+      // явным пересчётом в пикселях, чтобы к моменту передачи страницы узор
+      // стоял ровно там же, где будет на реальной странице назначения.
+
+      document.body.appendChild(clone);
+      link.style.visibility = 'hidden'; // прячем оригинал, место в макете не трогаем
+      activeFlights.push({ link: link, clone: clone });
+
+      // Остальной контент тоже уходит — но не разом и не сразу, а по одному,
+      // и с задержкой, достаточной для того, чтобы растущая карточка успела
+      // закрыть его собой. К моменту, когда элемент реально начинает таять,
+      // под ним уже не голый тёмный фон, а сама кнопка — поэтому затемнения
+      // не видно, а плавное угасание — видно.
+      var siblingCard = null;
+      if(link.parentElement){
+        var cardsInSamePanel = link.parentElement.querySelectorAll('a.card, .card.disabled');
+        for(var j = 0; j < cardsInSamePanel.length; j++){
+          if(cardsInSamePanel[j] !== link){ siblingCard = cardsInSamePanel[j]; break; }
+        }
+      }
+      var panelsFwd = document.querySelectorAll('.rest-panel');
+      var secondPanelFwd = panelsFwd.length > 1 ? panelsFwd[1] : null;
+      var sigFooterFwd = document.getElementById('sigTop');
+
+      var fadeOutTargets = [];
+      if(siblingCard) fadeOutTargets.push(siblingCard);
+      if(secondPanelFwd) fadeOutTargets.push(secondPanelFwd);
+      if(sigFooterFwd) fadeOutTargets.push(sigFooterFwd);
+
+      for(var k = 0; k < fadeOutTargets.length; k++){
+        var elOut = fadeOutTargets[k];
+        var delayOut = FADE_OUT_BASE_MS + k * FADE_STAGGER_MS;
+        elOut.style.pointerEvents = 'none';
+        elOut.style.transition = 'opacity ' + FADE_MS + 'ms ease ' + delayOut + 'ms';
+        elOut.style.opacity = '0';
+      }
+
+      var cloneText = clone.querySelector('.card-text-center');
+      var cloneLogo = clone.querySelector('.tea-logo, .bar-logo');
+      var cloneDate = clone.querySelector('.card-date');
+      var cloneArrow = clone.querySelector('.card-arrow-corner');
+
+      // Текст — на собственном позиционировании "поверх экрана", полностью
+      // независимом от коробки вокруг. Едет туда же и с той же скоростью,
+      // что и сама коробка — оба движения ощущаются одним целым, без спешки.
+      if(cloneText){
+        var textRectNow = cloneText.getBoundingClientRect();
+        cloneText.style.position = 'fixed';
+        cloneText.style.left = '0';
+        cloneText.style.top = textRectNow.top + 'px';
+        cloneText.style.margin = '0';
+      }
+
+      function goToPage(){
+        try{ sessionStorage.setItem('fly:' + targetHref, '1'); }catch(err){}
+        window.location.href = targetHref;
+      }
+
+      clone.style.transition =
+        'top ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'left ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'width ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'background-position ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'border-radius ' + TOTAL_MS + 'ms ' + EASE;
+      if(cloneText){
+        cloneText.style.transition = 'top ' + TOTAL_MS + 'ms ' + EASE + ', gap ' + TOTAL_MS + 'ms ' + EASE;
+      }
+      if(cloneArrow){
+        cloneArrow.style.transition = 'opacity .25s ease';
+      }
+      if(cloneLogo){
+        cloneLogo.style.transition = 'height ' + TOTAL_MS + 'ms ' + EASE;
+      }
+      if(cloneDate){
+        cloneDate.style.transition = 'font-size ' + TOTAL_MS + 'ms ' + EASE + ', letter-spacing ' + TOTAL_MS + 'ms ' + EASE;
+      }
+
+      // форсируем рефлоу, чтобы браузер зафиксировал стартовое состояние
+      void clone.offsetHeight;
+
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          clone.style.top = (-OVERSCAN) + 'px';
+          clone.style.left = (-OVERSCAN) + 'px';
+          clone.style.width = (window.innerWidth + OVERSCAN * 2) + 'px';
+          clone.style.height = (window.innerHeight + OVERSCAN * 2) + 'px';
+          clone.style.borderRadius = '0px';
+          // Точка отсчёта узора — ровно та же, что будет у настоящей страницы
+          // назначения (её фон всегда «top center» относительно всего экрана).
+          var bgX = (window.innerWidth - tileW) / 2 + OVERSCAN;
+          var bgY = OVERSCAN;
+          clone.style.backgroundPosition = '0px 0px, ' + bgX + 'px ' + bgY + 'px';
+          if(cloneText){ cloneText.style.top = finalLogoTop + 'px'; cloneText.style.gap = '3px'; } // точная позиция и отступ, как в реальной шапке
+          if(cloneArrow) cloneArrow.style.opacity = '0';
+          // Лого и дата остаются видимыми и просто уменьшаются до размера,
+          // который они займут в реальной шапке — это то самое "оставить
+          // кнопку видимой", а не спрятать её перед переходом.
+          if(cloneLogo){ cloneLogo.style.height = finalLogoH + 'px'; }
+          if(cloneDate){ cloneDate.style.fontSize = '.68rem'; cloneDate.style.letterSpacing = '.09em'; }
+
+          setTimeout(goToPage, TOTAL_MS + 60);
+        });
+      });
+    });
+  }
+
+  var flyLinks = document.querySelectorAll('a.card.card-tea, a.card.card-bar');
+  for(var i = 0; i < flyLinks.length; i++){ attachFly(flyLinks[i]); }
+
+  // ---------- Возврат назад без перезагрузки ----------
+  // Если браузер восстанавливает эту страницу из bfcache (кнопка "назад" после
+  // перехода в чайную/барную карту), она будет заморожена ровно в момент ухода —
+  // то есть с летящим клоном на весь экран, спрятанной настоящей карточкой и
+  // угасшим остальным контентом. Вместо перезагрузки — зеркально собираем всё
+  // обратно: коробка и текст едут единым движением, остальной контент проявляется
+  // по одному сразу же (клон в это время ещё большой и надёжно его прикрывает),
+  // а в самом конце клон плавно растворяется в настоящую (уже с узором) кнопку —
+  // без щелчка.
+  function reverseCollapse(flight){
+    var link = flight.link, clone = flight.clone;
+
+    // Остальной контент (сосед по панели, вторая панель, подпись внизу) мог
+    // остаться угасшим ещё с прошлого угасания при уходе — возвращаем его,
+    // по одному, тем же порядком.
+    function restoreOtherContent(staggered){
+      var siblingCard = null;
+      if(link && link.parentElement){
+        var cardsInSamePanel = link.parentElement.querySelectorAll('a.card, .card.disabled');
+        for(var j = 0; j < cardsInSamePanel.length; j++){
+          if(cardsInSamePanel[j] !== link){ siblingCard = cardsInSamePanel[j]; break; }
+        }
+      }
+      var panels = document.querySelectorAll('.rest-panel');
+      var secondPanel = panels.length > 1 ? panels[1] : null;
+      var sigFooter = document.getElementById('sigTop');
+
+      var targets = [];
+      if(siblingCard) targets.push(siblingCard);
+      if(secondPanel) targets.push(secondPanel);
+      if(sigFooter) targets.push(sigFooter);
+
+      for(var k = 0; k < targets.length; k++){
+        var el = targets[k];
+        if(staggered){
+          el.style.transition = 'opacity ' + FADE_MS + 'ms ease ' + (k * FADE_STAGGER_MS) + 'ms';
+          el.style.opacity = '1';
+        } else {
+          el.style.transition = '';
+          el.style.opacity = '';
+        }
+        el.style.pointerEvents = '';
+      }
+    }
+
+    if(!clone || !clone.parentNode){
+      if(link) link.style.visibility = '';
+      if(ORIGINAL_THEME_COLOR) setThemeColor(ORIGINAL_THEME_COLOR);
+      restoreOtherContent(false);
+      return;
+    }
+
+    var cloneText = clone.querySelector('.card-text-center');
+    var cloneLogo = clone.querySelector('.tea-logo, .bar-logo');
+    var cloneDate = clone.querySelector('.card-date');
+    var cloneArrow = clone.querySelector('.card-arrow-corner');
+    var tileW = parseInt(clone.getAttribute('data-tile-width'), 10);
+    if(isNaN(tileW)) tileW = 460;
+
+    restoreOtherContent(true);
+
+    clone.style.transition =
+      'top ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'left ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'width ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'background-position ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'border-radius ' + TOTAL_MS + 'ms ' + EASE;
+    if(cloneText){
+      cloneText.style.transition = 'top ' + TOTAL_MS + 'ms ' + EASE + ', gap ' + TOTAL_MS + 'ms ' + EASE;
+    }
+    if(cloneArrow){
+      cloneArrow.style.transition = 'opacity .3s ease';
+    }
+    if(cloneLogo){
+      cloneLogo.style.transition =
+        'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TEXT_FADE_MS + 'ms ease';
+    }
+    if(cloneDate){
+      cloneDate.style.transition =
+        'font-size ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'letter-spacing ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TEXT_FADE_MS + 'ms ease';
+    }
+
+    void clone.offsetHeight;
+
+    // Координаты берём не сейчас, а в последний момент, прямо перед стартом
+    // движения — и только когда шрифты точно готовы. Если измерить раньше
+    // (сразу при восстановлении страницы из bfcache), разметка может ещё не
+    // до конца устояться (например, из-за донагрузки шрифта) — тогда клон
+    // летит по чуть устаревшим координатам и в конце ощутимо "доезжает"/
+    // подпрыгивает до настоящего места. Пересчёт в последний момент убирает
+    // этот зазор.
+    function startShrink(){
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          var rectNow = link.getBoundingClientRect();
+          var naturalTextTopNow = rectNow.top;
+          if(cloneText){
+            var linkTextNow = link.querySelector('.card-text-center');
+            if(linkTextNow) naturalTextTopNow = linkTextNow.getBoundingClientRect().top;
+          }
+          var realRadiusNow = getComputedStyle(link).borderRadius;
+
+          clone.style.top = rectNow.top + 'px';
+          clone.style.left = rectNow.left + 'px';
+          clone.style.width = rectNow.width + 'px';
+          clone.style.height = rectNow.height + 'px';
+          clone.style.borderRadius = realRadiusNow;
+          // Возвращаем узор туда же, где он был у кнопки в естественном состоянии
+          // (до клика) — то есть «top center» относительно самой карточки.
+          var bgXBack = (rectNow.width - tileW) / 2;
+          clone.style.backgroundPosition = '0px 0px, ' + bgXBack + 'px 0px';
+          if(cloneText){ cloneText.style.top = naturalTextTopNow + 'px'; cloneText.style.gap = ''; }
+          if(cloneArrow) cloneArrow.style.opacity = '1';
+          if(cloneLogo){ cloneLogo.style.height = ''; cloneLogo.style.opacity = '1'; }
+          if(cloneDate){ cloneDate.style.fontSize = ''; cloneDate.style.letterSpacing = ''; cloneDate.style.opacity = '1'; }
+
+          // Коробка и текст пришли на точное место настоящей кнопки. Показываем
+          // настоящую (уже с узором фона) кнопку под клоном и плавно растворяем
+          // клон поверх неё — узор проступает мягко, а не щелчком. Остальной
+          // контент всё это время оставался на месте (его никто не прятал), так
+          // что отдельно "проявлять" его не нужно — он уже там.
+          setTimeout(function(){
+            if(link) link.style.visibility = '';
+            clone.style.willChange = '';
+            clone.style.transition = 'opacity ' + CLONE_FADE_MS + 'ms ease';
+            void clone.offsetHeight;
+            clone.style.opacity = '0';
+
+            setTimeout(function(){
+              if(clone.parentNode) clone.parentNode.removeChild(clone);
+              if(ORIGINAL_THEME_COLOR) setThemeColor(ORIGINAL_THEME_COLOR);
+            }, CLONE_FADE_MS + 20);
+          }, TOTAL_MS + 40);
+        });
+      });
+    }
+
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(startShrink, startShrink);
+    } else {
+      startShrink();
+    }
+  }
+
+  window.addEventListener('pageshow', function(){
+    if(!activeFlights.length) return;
+    // Если страница была прокручена — сбрасываем прокрутку в начало ДО
+    // расчёта целевой позиции кнопки. Иначе клон летит туда, где кнопка
+    // была на момент замера, а реальная (уже прокрученная к началу или
+    // ещё нет) страница может показать её в другом месте — отсюда и рывок
+    // в конце. Так позиция всегда однозначна и совпадает с тем, что видит
+    // пользователь.
+    window.scrollTo(0, 0);
+    var flights = activeFlights;
+    activeFlights = [];
+    for(var i = 0; i < flights.length; i++){ reverseCollapse(flights[i]); }
+  });
+})();
+
+(function(){
+  // Тап по подписи "проглатывает" её на 6 секунд, показывая на её же месте
+  // контакты, и сама возвращается обратно — без повторного нажатия.
+  var sigTop = document.getElementById('sigTop');
+  var sigBtn = document.getElementById('sigLogoBtn');
+  if(!sigTop || !sigBtn) return;
+  var hideTimer = null;
+
+  sigBtn.addEventListener('click', function(){
+    sigTop.classList.add('sig-open');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function(){
+      sigTop.classList.remove('sig-open');
+    }, 6000);
+  });
+})();
+</script>
+
+</body>
+</html>
