@@ -105,8 +105,8 @@
   }
 
   /* ---------- Вкладки-фильтры на чистом CSS ---------- */
-  #tab-lemon:checked ~ main .demo-panel:not([data-cat="lemon"]){display:none;}
-  #tab-lemon:checked ~ header label[for="tab-lemon"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  #tab-sets:checked ~ main .demo-panel:not([data-cat="sets"]){display:none;}
+  #tab-sets:checked ~ header label[for="tab-sets"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
   #tab-cocktail:checked ~ main .demo-panel:not([data-cat="cocktail"]){display:none;}
   #tab-cocktail:checked ~ header label[for="tab-cocktail"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
   #tab-calc:checked ~ main .demo-panel:not([data-cat="calc"]){display:none;}
@@ -229,7 +229,7 @@
   }
 })();
 </script>
-<input checked="" class="tab-radio" id="tab-lemon" name="barcat" type="radio"/><input class="tab-radio" id="tab-cocktail" name="barcat" type="radio"/><input class="tab-radio" id="tab-calc" name="barcat" type="radio"/><input class="tab-radio" id="tab-premix" name="barcat" type="radio"/>
+<input checked="" class="tab-radio" id="tab-sets" name="barcat" type="radio"/><input class="tab-radio" id="tab-cocktail" name="barcat" type="radio"/><input class="tab-radio" id="tab-calc" name="barcat" type="radio"/><input class="tab-radio" id="tab-premix" name="barcat" type="radio"/>
 <header class="topbar">
 <div class="brand">
 <h1><img alt="Барная карта" class="brand-logo" src="logo-bar-wide-light.png"/></h1>
@@ -237,19 +237,45 @@
 </div>
 <span class="tagline">Демо-страница: структура и переход уже готовы, содержимое разделов — впереди</span>
 <nav class="pills">
-<label class="pill" for="tab-lemon">Домашние лимонады</label>
+<label class="pill" for="tab-sets">Сеты</label>
 <label class="pill" for="tab-cocktail">Коктейли</label>
 <label class="pill" for="tab-premix">Премиксы Б/А</label>
 <label class="pill" for="tab-calc">Калькулятор</label>
 </nav>
 </header>
 <main id="app">
-<section class="demo-panel" data-cat="lemon">
-<div class="demo-box">
-<p class="demo-eyebrow">Раздел в разработке</p>
-<h2 class="demo-title">Домашние лимонады</h2>
-<p class="demo-text">Рецепты и пропорции лимонадов ожидаются в будущем.</p>
-</div>
+<section class="demo-panel" data-cat="sets">
+<div class="cat-head"><span class="dot"></span><h2>Сеты</h2><span class="n">4</span></div>
+<p class="cat-note">Премиксы для сетов шотов: без шейкера и льда, вода заменяет растаявший лёд. Перед розливом бутылку встряхнуть, хранить в холодильнике, подавать ледяным.</p>
+<details class="card" style="--dot:#C4455A">
+<summary class="card-head"><span class="card-name">Гранатовый<span class="prep-note"> · 1 л = 5 сетов · 20 шотов</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Сет 200мл = 4 × 50мл</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 сет</th><th>Бутылка · 5 сетов</th></tr></thead><tbody><tr><td class="ing-name">Водка Арбени/Ануш</td><td class="ing-amt">80мл</td><td class="ing-amt">400мл</td></tr><tr><td class="ing-name">Наршараб микс ПФ</td><td class="ing-amt">20мл</td><td class="ing-amt">100мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">20мл</td><td class="ing-amt">100мл</td></tr><tr><td class="ing-name">Пюре Малина</td><td class="ing-amt">15мл</td><td class="ing-amt">75мл</td></tr><tr><td class="ing-name">Вода</td><td class="ing-amt">65мл</td><td class="ing-amt">325мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">200мл</td><td class="ing-amt">1000мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 сета</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">200 мл</span></li><li><span class="decor-name">Подача</span><span class="decor-val">4 шота по 50 мл</span></li><li><span class="decor-name">Гранат очищ. ПФ (на доску)</span><span class="decor-val">10 г</span></li></ul></div>
+
+</div></div></details><details class="card" style="--dot:#9DB86A">
+<summary class="card-head"><span class="card-name">Яблочный<span class="prep-note"> · 900 мл = 6 сетов · 24 шота</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 900мл</span><span class="badge">Сет 200мл = 4 × 50мл</span><span class="badge">Тоник отдельно</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 сет</th><th>Бутылка · 6 сетов</th></tr></thead><tbody><tr><td class="ing-name">Джин Барристер/Нива</td><td class="ing-amt">60мл</td><td class="ing-amt">360мл</td></tr><tr><td class="ing-name">Ликёр Люксардо</td><td class="ing-amt">15мл</td><td class="ing-amt">90мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">10мл</td><td class="ing-amt">60мл</td></tr><tr><td class="ing-name">Сахарный сироп ПФ</td><td class="ing-amt">10мл</td><td class="ing-amt">60мл</td></tr><tr><td class="ing-name">Вода</td><td class="ing-amt">55мл</td><td class="ing-amt">330мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">150мл</td><td class="ing-amt">900мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 сета</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">150 мл</span></li><li><span class="decor-name">Тоник (лимонад ПЭТ д/коктейлей)</span><span class="decor-val">50 мл</span></li><li><span class="decor-name">Подача</span><span class="decor-val">4 шота по 50 мл</span></li><li><span class="decor-name">Яблоки (слайсы на доску)</span><span class="decor-val">20 г</span></li></ul></div>
+<p class="card-note">Тоник в бутылку не кладём: газ выдыхается. В мерный стакан 150 мл премикса + 50 мл тоника, аккуратно размешать, разлить на 4 шота.</p>
+</div></div></details><details class="card" style="--dot:#9A7BC0">
+<summary class="card-head"><span class="card-name">Бузинный<span class="prep-note"> · 1 л = 5 сетов · 20 шотов</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Сет 200мл = 4 × 50мл</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 сет</th><th>Бутылка · 5 сетов</th></tr></thead><tbody><tr><td class="ing-name">Джин Барристер/Нива</td><td class="ing-amt">80мл</td><td class="ing-amt">400мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">20мл</td><td class="ing-amt">100мл</td></tr><tr><td class="ing-name">Сироп Алыча (Монин)</td><td class="ing-amt">15мл</td><td class="ing-amt">75мл</td></tr><tr><td class="ing-name">Сахарный сироп ПФ</td><td class="ing-amt">10мл</td><td class="ing-amt">50мл</td></tr><tr><td class="ing-name">Морс</td><td class="ing-amt">20мл</td><td class="ing-amt">100мл</td></tr><tr><td class="ing-name">Сок грейпфрут</td><td class="ing-amt">15мл</td><td class="ing-amt">75мл</td></tr><tr><td class="ing-name">Вода</td><td class="ing-amt">40мл</td><td class="ing-amt">200мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">200мл</td><td class="ing-amt">1000мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 сета</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">200 мл</span></li><li><span class="decor-name">Подача</span><span class="decor-val">4 шота по 50 мл</span></li><li><span class="decor-name">Грейпфрут (четвертинка слайса на доску)</span><span class="decor-val">~70 г</span></li></ul></div>
+
+</div></div></details><details class="card" style="--dot:#C28A5B">
+<summary class="card-head"><span class="card-name">Ореховый<span class="prep-note"> · 1 л = 5 сетов · 20 шотов</span></span><span class="chev">⌄</span></summary>
+<div class="card-content"><div class="card-content-inner">
+<div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">Сет 200мл = 4 × 50мл</span></div>
+<table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 сет</th><th>Бутылка · 5 сетов</th></tr></thead><tbody><tr><td class="ing-name">Ликёр Люксардо</td><td class="ing-amt">40мл</td><td class="ing-amt">200мл</td></tr><tr><td class="ing-name">Водка Арбени/Ануш</td><td class="ing-amt">40мл</td><td class="ing-amt">200мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">30мл</td><td class="ing-amt">150мл</td></tr><tr><td class="ing-name">Вермут россо</td><td class="ing-amt">30мл</td><td class="ing-amt">150мл</td></tr><tr><td class="ing-name">Вода</td><td class="ing-amt">60мл</td><td class="ing-amt">300мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">200мл</td><td class="ing-amt">1000мл</td></tr></tbody></table>
+<div class="decor-box"><div class="decor-title">Сборка 1 сета</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">200 мл</span></li><li><span class="decor-name">Подача</span><span class="decor-val">4 шота по 50 мл</span></li></ul></div>
+
+</div></div></details>
 </section>
 <section class="demo-panel" data-cat="cocktail">
 <div class="demo-box">
