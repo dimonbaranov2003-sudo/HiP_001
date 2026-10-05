@@ -212,6 +212,40 @@
   .ing-table th{white-space:normal; line-height:1.25; vertical-align:bottom;}
   .ing-table th:first-child, .ing-table td:first-child{width:42%;}
   .ing-table td:not(:first-child), .ing-table th:not(:first-child){padding-right:10px;}
+
+  /* ---------- Калькулятор ---------- */
+  .seg{display:flex; gap:6px; margin:0 0 14px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:4px;}
+  .seg-btn{flex:1; font:600 .92rem 'Manrope',sans-serif; color:var(--ink); background:transparent; border:0; border-radius:7px; padding:10px 8px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .seg-btn.active{background:var(--accent); color:var(--bg);}
+  .calc-box{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 14px 16px;}
+  .calc-box[hidden]{display:none;}
+  .calc-info{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted); margin:0 0 12px;}
+  .calc-label{font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:14px 0 7px;}
+  .calc-label:first-child{margin-top:0;}
+  .stepper{display:flex; gap:8px; align-items:stretch;}
+  .step-btn{flex:0 0 52px; font:600 1.4rem 'Manrope',sans-serif; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:8px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .step-btn:active{background:var(--accent); color:var(--bg);}
+  .num-in{width:100%; min-width:0; box-sizing:border-box; font:500 1.15rem 'IBM Plex Mono',monospace; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px; text-align:center; -moz-appearance:textfield;}
+  .num-in::-webkit-outer-spin-button,.num-in::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .num-in:focus{outline:none; border-color:var(--accent);}
+  .open-row{display:flex; gap:8px; align-items:center; margin-bottom:8px;}
+  .open-row .num-in{text-align:left; padding:11px 12px;}
+  .chip{flex:0 0 auto; font:600 .8rem 'IBM Plex Mono',monospace; color:var(--muted); background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:9px 8px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .chip:active{background:var(--accent); color:var(--bg);}
+  .rm-open{flex:0 0 36px; height:40px; font-size:1.1rem; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:8px; cursor:pointer;}
+  .add-open{width:100%; font:600 .86rem 'Manrope',sans-serif; color:var(--accent); background:transparent; border:1px dashed var(--accent); border-radius:8px; padding:11px; cursor:pointer; margin-top:2px;}
+  .size-row{display:flex; gap:8px; margin-bottom:12px;}
+  .size-btn{flex:1; font:600 .95rem 'Manrope',sans-serif; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:11px 6px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .size-btn.active{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  .warn{margin-top:10px; font-size:.78rem; color:#E07A6A; line-height:1.4;}
+  .warn[hidden]{display:none;}
+  .result{margin-top:16px; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:8px; border-left:4px solid var(--accent);}
+  .res-main{display:flex; align-items:baseline; gap:10px;}
+  .res-num{font-family:'Fraunces',serif; font-size:2.6rem; font-weight:500; line-height:1; color:var(--accent);}
+  .res-unit{font-size:1rem; color:var(--ink);}
+  .res-lines{list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:4px; font-size:.82rem; color:var(--muted);}
+  .res-lines b{color:var(--ink); font-weight:600; font-family:'IBM Plex Mono',monospace;}
+  .calc-reset{width:100%; margin-top:12px; font:600 .86rem 'Manrope',sans-serif; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:8px; padding:11px; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -343,11 +377,56 @@
 </div></div></details>
 </section>
 <section class="demo-panel" data-cat="calc">
-<div class="demo-box">
-<p class="demo-eyebrow">Раздел в разработке</p>
-<h2 class="demo-title">Калькулятор</h2>
-<p class="demo-text">Инструмент для пересчёта пропорций ожидается в будущем.</p>
+<div class="cat-head"><span class="dot"></span><h2>Калькулятор</h2></div>
+<p class="cat-note">Считает порции из целых и открытых бутылок. Остаток открытой бутылки вводите в мл.</p>
+<div class="seg" id="calcMode">
+  <button type="button" class="seg-btn active" data-mode="wine">Вино</button>
+  <button type="button" class="seg-btn" data-mode="spirits">Крепкий</button>
 </div>
+
+<div class="calc-box" id="calc-wine" data-bottle="750" data-portion="150" data-one="бокал" data-few="бокала" data-many="бокалов">
+  <div class="calc-info">Бутылка 750 мл · бокал 150 мл</div>
+  <div class="calc-label">Целые бутылки</div>
+  <div class="stepper">
+    <button type="button" class="step-btn" data-step="-1" aria-label="Меньше">−</button>
+    <input class="num-in full-in" type="number" inputmode="numeric" min="0" step="1" placeholder="0">
+    <button type="button" class="step-btn" data-step="1" aria-label="Больше">+</button>
+  </div>
+  <div class="calc-label">Открытые бутылки, остаток в мл</div>
+  <div class="open-list"></div>
+  <button type="button" class="add-open">+ Добавить открытую бутылку</button>
+  <div class="warn" hidden></div>
+  <div class="result">
+    <div class="res-main"><span class="res-num">0</span><span class="res-unit">бокалов</span></div>
+    <ul class="res-lines"></ul>
+  </div>
+</div>
+
+<div class="calc-box" id="calc-spirits" data-bottle="700" data-portion="50" data-one="порция" data-few="порции" data-many="порций" hidden>
+  <div class="calc-label">Объём бутылки</div>
+  <div class="size-row">
+    <button type="button" class="size-btn" data-size="500">0,5 л</button>
+    <button type="button" class="size-btn active" data-size="700">0,7 л</button>
+    <button type="button" class="size-btn" data-size="1000">1 л</button>
+  </div>
+  <div class="calc-info">Порция 50 мл</div>
+  <div class="calc-label">Целые бутылки</div>
+  <div class="stepper">
+    <button type="button" class="step-btn" data-step="-1" aria-label="Меньше">−</button>
+    <input class="num-in full-in" type="number" inputmode="numeric" min="0" step="1" placeholder="0">
+    <button type="button" class="step-btn" data-step="1" aria-label="Больше">+</button>
+  </div>
+  <div class="calc-label">Открытые бутылки, остаток в мл</div>
+  <div class="open-list"></div>
+  <button type="button" class="add-open">+ Добавить открытую бутылку</button>
+  <div class="warn" hidden></div>
+  <div class="result">
+    <div class="res-main"><span class="res-num">0</span><span class="res-unit">порций</span></div>
+    <ul class="res-lines"></ul>
+  </div>
+</div>
+
+<button type="button" class="calc-reset" id="calcReset">Сбросить</button>
 </section>
 </main>
 <footer>
@@ -407,6 +486,113 @@
       e.preventDefault();
       if(!d.hasAttribute('open')){cards.forEach(function(o){if(o!==d)closeCard(o);});openCard(d);}
       else closeCard(d);
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function fmt(n){return Math.round(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');}
+  function plural(n,one,few,many){
+    var a=n%10,b=n%100;
+    if(a===1&&b!==11)return one;
+    if(a>=2&&a<=4&&(b<12||b>14))return few;
+    return many;
+  }
+  function num(v){var x=parseFloat(v);return isFinite(x)&&x>0?x:0;}
+
+  function Calc(box){
+    var self=this;
+    this.box=box;
+    this.portion=+box.dataset.portion;
+    this.bottle=+box.dataset.bottle;
+    this.full=box.querySelector('.full-in');
+    this.list=box.querySelector('.open-list');
+    this.warn=box.querySelector('.warn');
+    this.num=box.querySelector('.res-num');
+    this.unit=box.querySelector('.res-unit');
+    this.lines=box.querySelector('.res-lines');
+    this.words=[box.dataset.one,box.dataset.few,box.dataset.many];
+
+    box.querySelectorAll('.step-btn').forEach(function(b){
+      b.addEventListener('click',function(){
+        var v=Math.max(0,Math.floor(num(self.full.value))+(+b.dataset.step));
+        self.full.value=v?v:'';
+        self.update();
+      });
+    });
+    this.full.addEventListener('input',function(){self.update();});
+    box.querySelector('.add-open').addEventListener('click',function(){self.addRow();});
+    box.querySelectorAll('.size-btn').forEach(function(b){
+      b.addEventListener('click',function(){
+        box.querySelectorAll('.size-btn').forEach(function(x){x.classList.remove('active');});
+        b.classList.add('active');
+        self.bottle=+b.dataset.size;
+        self.update();
+      });
+    });
+    this.addRow();
+    this.update();
+  }
+  Calc.prototype.addRow=function(){
+    var self=this;
+    var row=document.createElement('div'); row.className='open-row';
+    var inp=document.createElement('input');
+    inp.className='num-in open-in'; inp.type='number'; inp.inputMode='numeric'; inp.min='0'; inp.placeholder='мл';
+    inp.addEventListener('input',function(){self.update();});
+    row.appendChild(inp);
+    [['¼',0.25],['½',0.5],['¾',0.75]].forEach(function(p){
+      var c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=p[0];
+      c.addEventListener('click',function(){inp.value=Math.round(self.bottle*p[1]); self.update();});
+      row.appendChild(c);
+    });
+    var rm=document.createElement('button'); rm.type='button'; rm.className='rm-open'; rm.textContent='×'; rm.setAttribute('aria-label','Убрать');
+    rm.addEventListener('click',function(){
+      if(self.list.children.length>1){self.list.removeChild(row);} else {inp.value='';}
+      self.update();
+    });
+    row.appendChild(rm);
+    this.list.appendChild(row);
+  };
+  Calc.prototype.update=function(){
+    var bottle=this.bottle, p=this.portion;
+    var full=Math.floor(num(this.full.value));
+    var over=false, open=0, count=0;
+    this.list.querySelectorAll('.open-in').forEach(function(i){
+      var v=num(i.value);
+      if(v>bottle){v=bottle; over=true;}
+      if(v>0){open+=v; count++;}
+    });
+    var total=full*bottle+open;
+    var n=Math.floor(total/p), rest=total-n*p;
+    this.num.textContent=fmt(n);
+    this.unit.textContent=plural(n,this.words[0],this.words[1],this.words[2]);
+    var L=[];
+    L.push('Всего в бутылках: <b>'+fmt(total)+' мл</b>');
+    if(full) L.push('Целые: <b>'+full+' × '+fmt(bottle)+' мл</b> = '+fmt(full*bottle)+' мл');
+    if(count) L.push('Открытые: <b>'+fmt(open)+' мл</b> ('+count+' шт.)');
+    if(total>0) L.push('Остаток после последней порции: <b>'+fmt(rest)+' мл</b>');
+    this.lines.innerHTML=L.map(function(x){return '<li>'+x+'</li>';}).join('');
+    if(over){this.warn.hidden=false; this.warn.textContent='Остаток больше объёма бутылки ('+fmt(bottle)+' мл): учтено '+fmt(bottle)+' мл.';}
+    else this.warn.hidden=true;
+  };
+
+  var wine=new Calc(document.getElementById('calc-wine'));
+  var spirits=new Calc(document.getElementById('calc-spirits'));
+  var mode='wine';
+  function show(m){
+    mode=m;
+    document.getElementById('calc-wine').hidden=(m!=='wine');
+    document.getElementById('calc-spirits').hidden=(m!=='spirits');
+    document.querySelectorAll('#calcMode .seg-btn').forEach(function(b){b.classList.toggle('active',b.dataset.mode===m);});
+  }
+  document.querySelectorAll('#calcMode .seg-btn').forEach(function(b){
+    b.addEventListener('click',function(){show(b.dataset.mode);});
+  });
+  document.getElementById('calcReset').addEventListener('click',function(){
+    [wine,spirits].forEach(function(c){
+      c.full.value='';
+      c.list.innerHTML=''; c.addRow(); c.update();
     });
   });
 })();
