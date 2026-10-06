@@ -181,7 +181,7 @@
 </span>
 <span class="card-arrow-corner">→</span>
 </a>
-<a class="card card-bar" href="bar.html" data-final-logo-height="34" data-final-logo-top="20" data-tile-width="420">
+<a class="card card-bar" href="bar.html" data-final-logo-height="28" data-final-logo-top="20" data-tile-width="420">
 <span class="card-text-center">
 <img class="bar-logo" src="logo-bar-wide-light.png" alt="Барная карта"/>
 <span class="card-date">05.10.2026</span>
@@ -235,10 +235,14 @@
   // обратно, без перезагрузки.
   var activeFlights = [];
 
+  function cardKey(link){ return (link.getAttribute('href') || '').replace('.html', ''); }
+
   function attachFly(link){
     link.addEventListener('click', function(e){
       // Открытие в новой вкладке / модификаторы — не трогаем, пусть работает как обычная ссылка
       if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      // Запоминаем, что в карту зашли с главной и какую именно — для стрелки «назад» на карте.
+      try{ sessionStorage.setItem('fromHome', '1'); sessionStorage.setItem('lastCard', cardKey(link)); }catch(err){}
 
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(reduceMotion) return; // обычный переход без анимации
@@ -534,6 +538,50 @@
     }
   }
 
+  // Если на карте переключились на соседнюю (чай ↔ бар) и вернулись назад, замороженная
+  // страница помнит вылет другой карточки. Подменяем её на нужную — раскрытую на весь экран.
+  function swapFlight(flight, key){
+    var newLink = document.querySelector('a.card[href="' + key + '.html"]');
+    if(!newLink || newLink === flight.link) return null;
+    if(flight.clone && flight.clone.parentNode) flight.clone.parentNode.removeChild(flight.clone);
+    flight.link.style.visibility = '';
+    var all = document.querySelectorAll('a.card, .card.disabled, .rest-panel, #sigTop');
+    for(var a = 0; a < all.length; a++){ all[a].style.transition = ''; all[a].style.opacity = ''; all[a].style.pointerEvents = ''; }
+    setThemeColor(getComputedStyle(newLink).backgroundColor);
+
+    var finalLogoH = parseInt(newLink.getAttribute('data-final-logo-height'), 10) || 30;
+    var finalLogoTop = parseInt(newLink.getAttribute('data-final-logo-top'), 10);
+    if(isNaN(finalLogoTop)) finalLogoTop = 14;
+    var tileW = parseInt(newLink.getAttribute('data-tile-width'), 10) || 460;
+    var clone = newLink.cloneNode(true);
+    clone.classList.add('fly-clone');
+    clone.removeAttribute('href');
+    clone.removeAttribute('data-final-logo-height');
+    clone.removeAttribute('data-final-logo-top');
+    var st = clone.style;
+    st.position = 'fixed'; st.margin = '0';
+    st.top = (-OVERSCAN) + 'px'; st.left = (-OVERSCAN) + 'px';
+    st.width = (window.innerWidth + OVERSCAN * 2) + 'px';
+    st.height = (window.innerHeight + OVERSCAN * 2) + 'px';
+    st.zIndex = '99999'; st.pointerEvents = 'none'; st.borderRadius = '0px'; st.willChange = 'top, left, width, height';
+    st.backgroundPosition = '0px 0px, ' + ((window.innerWidth - tileW) / 2 + OVERSCAN) + 'px ' + OVERSCAN + 'px';
+    var cText = clone.querySelector('.card-text-center');
+    if(cText){ cText.style.position = 'fixed'; cText.style.left = '0'; cText.style.top = finalLogoTop + 'px'; cText.style.margin = '0'; cText.style.gap = '3px'; }
+    var cLogo = clone.querySelector('.tea-logo, .bar-logo'); if(cLogo) cLogo.style.height = finalLogoH + 'px';
+    var cDate = clone.querySelector('.card-date'); if(cDate) cDate.style.opacity = '0';
+    var cArrow = clone.querySelector('.card-arrow-corner'); if(cArrow) cArrow.style.opacity = '0';
+    document.body.appendChild(clone);
+    newLink.style.visibility = 'hidden';
+
+    var sib = null, sibs = newLink.parentElement.querySelectorAll('a.card, .card.disabled');
+    for(var j = 0; j < sibs.length; j++){ if(sibs[j] !== newLink){ sib = sibs[j]; break; } }
+    var panels = document.querySelectorAll('.rest-panel');
+    var faded = [sib, panels.length > 1 ? panels[1] : null, document.getElementById('sigTop')];
+    for(var k = 0; k < faded.length; k++){ if(faded[k]){ faded[k].style.opacity = '0'; faded[k].style.pointerEvents = 'none'; } }
+    void document.body.offsetHeight;
+    return { link: newLink, clone: clone };
+  }
+
   window.addEventListener('pageshow', function(){
     if(!activeFlights.length) return;
     // Если страница была прокручена — сбрасываем прокрутку в начало ДО
@@ -545,7 +593,13 @@
     window.scrollTo(0, 0);
     var flights = activeFlights;
     activeFlights = [];
-    for(var i = 0; i < flights.length; i++){ reverseCollapse(flights[i]); }
+    var lastCard = null;
+    try{ lastCard = sessionStorage.getItem('lastCard'); }catch(err){}
+    for(var i = 0; i < flights.length; i++){
+      var fl = flights[i];
+      if(lastCard && cardKey(fl.link) !== lastCard){ fl = swapFlight(fl, lastCard) || fl; }
+      reverseCollapse(fl);
+    }
   });
 })();
 

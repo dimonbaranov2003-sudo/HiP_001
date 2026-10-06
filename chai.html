@@ -291,34 +291,35 @@
   }
   .cat-note{font-size:.78rem; color:var(--muted); line-height:1.45; margin:0 2px 12px;}
 
-  /* ---------- Кнопки перехода между картами ---------- */
-  .nav-row{display:flex; justify-content:center; align-items:center; gap:8px; margin-top:6px;}
-  .nav-btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:9px;
-    height:36px; padding:0 14px; border-radius:10px; text-decoration:none;
-    -webkit-tap-highlight-color:transparent;
-    transition:transform .15s ease, box-shadow .2s ease;
+  /* ---------- Назад и переход между картами ---------- */
+  .brand{position:relative; --logo-h:36px;}
+  .back-btn{
+    position:absolute; left:-10px; top:calc((var(--logo-h) - 44px) / 2);
+    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+    color:var(--accent-ink); text-decoration:none; -webkit-tap-highlight-color:transparent;
+    transition:transform .15s ease;
   }
-  .nav-btn:active{transform:scale(.97);}
-  @media (hover:hover){ .nav-btn:hover{box-shadow:0 4px 14px rgba(40,25,15,.22);} }
-  .nav-home{
-    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.74rem; letter-spacing:.05em;
-    color:var(--accent-ink); border:1px solid var(--line); background:rgba(251,249,248,.65);
+  .back-btn svg{width:11px; height:19px; display:block; transition:opacity .55s cubic-bezier(.22,1,.36,1);}
+  .back-btn:active{transform:translateX(-2px);}
+  .nav-row{display:flex; justify-content:center; align-items:center; margin-top:2px;}
+  .nav-link{
+    display:inline-flex; align-items:center; gap:8px; padding:9px 12px;
+    color:var(--accent-ink); text-decoration:none; -webkit-tap-highlight-color:transparent;
+    transition:opacity .15s ease;
   }
-  .nav-to-bar{
-    background-color:#241611;
-    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
-    background-size:420px auto, 420px auto; background-position:top center, top center;
-    border:1px solid rgba(200,138,78,0.55);
+  .nav-link:active{opacity:.5;}
+  .nav-logo{
+    display:block; height:14px; aspect-ratio:2096/225; background-color:currentColor;
+    -webkit-mask:url("logo-bar-wide.png") center/contain no-repeat; mask:url("logo-bar-wide.png") center/contain no-repeat;
   }
-  .nav-to-bar img{height:15px; width:auto; display:block;}
-  .nav-to-bar .nav-arr{font-family:'IBM Plex Mono',monospace; font-size:1rem; color:#C88A4E; line-height:1;}
+  .nav-arr{font-family:'IBM Plex Mono',monospace; font-size:1rem; line-height:1;}
   .foot-date{
     font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.09em;
     text-transform:uppercase; color:var(--accent-ink); margin-bottom:8px;
   }
   .nav-row{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
   html.entry-veil .nav-row{opacity:0; transform:translateY(10px);}
+  html.entry-veil .back-btn svg{opacity:0;}
 </style>
 </head>
 <body>
@@ -347,10 +348,10 @@
 <input checked="" class="tab-radio" id="tab-all" name="cat" type="radio"/><input class="tab-radio" id="tab-cold" name="cat" type="radio"/><input class="tab-radio" id="tab-detox" name="cat" type="radio"/><input class="tab-radio" id="tab-fruit" name="cat" type="radio"/><input class="tab-radio" id="tab-milk" name="cat" type="radio"/><input class="tab-radio" id="tab-classic" name="cat" type="radio"/><input class="tab-radio" id="tab-summer" name="cat" type="radio"/><input class="tab-radio" id="tab-autumn" name="cat" type="radio"/><input class="tab-radio" id="tab-toppings" name="cat" type="radio"/>
 <header class="topbar">
 <div class="brand">
+<a class="back-btn" id="backBtn" href="index.html" data-nav="home" aria-label="В меню"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></a>
 <h1><img alt="Чайная карта" class="brand-logo" src="logo-chai-wide.png"/></h1>
 <nav class="nav-row" aria-label="Переход между картами">
-<a class="nav-btn nav-home" href="index.html" data-nav="home">‹ Меню</a>
-<a class="nav-btn nav-to-bar" href="bar.html" data-nav="bar" aria-label="Барная карта"><img alt="Барная карта" src="logo-bar-wide-light.png"/><span class="nav-arr">→</span></a>
+<a class="nav-link" href="bar.html" data-nav="bar" aria-label="Барная карта"><span class="nav-logo" role="img" aria-label="Барная карта"></span><span class="nav-arr">→</span></a>
 </nav>
 </div>
 <div class="search-row">
@@ -1256,14 +1257,34 @@
     var veil = makeVeil(to);
     veil.style.pointerEvents = 'auto';
     if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
-    try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); }catch(err){}
+    try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); if(to !== 'home') sessionStorage.setItem('lastCard', to); }catch(err){}
     void veil.offsetHeight;
     veil.style.transition = 'opacity ' + FADE_IN + 'ms ease';
     requestAnimationFrame(function(){ veil.style.opacity = '1'; });
-    setTimeout(function(){ window.location.href = href; }, FADE_IN + 40);
+    // между картами — replace: в истории остаётся «главная → карта», и стрелка «назад» всегда ведёт на главную
+    setTimeout(function(){ if(to === 'home'){ window.location.href = href; } else { window.location.replace(href); } }, FADE_IN + 40);
   }
-  var links = document.querySelectorAll('a[data-nav]');
+  var links = document.querySelectorAll('a[data-nav]:not(#backBtn)');
   for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
+
+
+  // Стрелка «назад»: если пришли с главной — это ровно «назад» в браузере,
+  // поэтому главная возвращается со своей анимацией (карточка сжимается обратно).
+  var backBtn = document.getElementById('backBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', function(e){
+      if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var viaHome = false;
+      try{ viaHome = sessionStorage.getItem('fromHome') === '1'; }catch(err){}
+      if(viaHome && window.history.length > 1){
+        e.preventDefault();
+        try{ sessionStorage.setItem(KEY, 'home|' + Date.now()); }catch(err){}
+        window.history.back();
+      } else {
+        onNavClick.call(backBtn, e); // открыли карту напрямую — обычный переход в меню
+      }
+    });
+  }
 
   // Кнопка «назад» вернула страницу из кэша браузера, пока поверх был цвет —
   // плавно убираем его и возвращаем свой цвет системной шторки.
