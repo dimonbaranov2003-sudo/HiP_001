@@ -151,6 +151,10 @@
     font-family:'Manrope',sans-serif; font-size:.66rem; color:var(--muted);
     max-width:260px; line-height:1.45;
   }
+
+  /* Приход с карты по кнопке «Меню»: страница проявляется из цвета. */
+  .wrap{transition:opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);}
+  html.entry-veil .wrap{opacity:0; transform:translateY(10px);}
 </style>
 </head>
 <body>
@@ -347,7 +351,7 @@
         cloneLogo.style.transition = 'height ' + TOTAL_MS + 'ms ' + EASE;
       }
       if(cloneDate){
-        cloneDate.style.transition = 'font-size ' + TOTAL_MS + 'ms ' + EASE + ', letter-spacing ' + TOTAL_MS + 'ms ' + EASE;
+        cloneDate.style.transition = 'opacity 420ms ease';
       }
 
       // форсируем рефлоу, чтобы браузер зафиксировал стартовое состояние
@@ -371,7 +375,7 @@
           // который они займут в реальной шапке — это то самое "оставить
           // кнопку видимой", а не спрятать её перед переходом.
           if(cloneLogo){ cloneLogo.style.height = finalLogoH + 'px'; }
-          if(cloneDate){ cloneDate.style.fontSize = '.68rem'; cloneDate.style.letterSpacing = '.09em'; }
+          if(cloneDate){ cloneDate.style.opacity = '0'; }
 
           setTimeout(goToPage, TOTAL_MS + 60);
         });
@@ -563,5 +567,111 @@
 })();
 </script>
 
+<script>
+(function(){
+  // ---------- Плавный переход между страницами: перелив цвета ----------
+  // Уходя со страницы: поверх неё плавно проступает цвет (и узор) карты, в которую
+  // идём. Приходя: страница стартует закрытой этим же цветом и плавно проявляется.
+  var OWN = 'home';
+  var KEY = 'navfade';
+  var FADE_IN = 480, FADE_OUT = 650, OVERSCAN = 24;
+  var SKINS = {
+    chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
+    bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
+    home: { bg:'#161210', theme:'#161210' }
+  };
+  var root = document.documentElement;
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var ownTheme = themeMeta ? themeMeta.getAttribute('content') : null;
+  var leaving = false;
+
+  function reduceMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  function makeVeil(to){
+    var c = SKINS[to], v = document.createElement('div'), st = v.style;
+    v.className = 'nav-veil';
+    st.position = 'fixed';
+    st.top = st.left = st.right = st.bottom = (-OVERSCAN) + 'px';
+    st.zIndex = '2147483000'; st.opacity = '0'; st.pointerEvents = 'none';
+    st.backgroundColor = c.bg;
+    if(c.img){
+      st.backgroundImage = 'linear-gradient(' + c.tint + ',' + c.tint + '), url("' + c.img + '")';
+      st.backgroundSize = c.size + ', ' + c.size;
+      st.backgroundPosition = 'center ' + OVERSCAN + 'px, center ' + OVERSCAN + 'px';
+      st.backgroundRepeat = 'repeat';
+    }
+    root.appendChild(v);
+    return v;
+  }
+  function dropVeil(v){ if(v && v.parentNode) v.parentNode.removeChild(v); }
+
+  // ----- Приход -----
+  var flag = null;
+  try{ flag = sessionStorage.getItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+  if(flag){
+    var parts = String(flag).split('|');
+    var fresh = (Date.now() - (parseInt(parts[1], 10) || 0)) < 15000;
+    if(parts[0] === OWN && fresh && !reduceMotion()){
+      var inVeil = makeVeil(OWN);
+      inVeil.style.opacity = '1'; inVeil.style.pointerEvents = 'auto';
+      root.classList.add('entry-veil');
+      var revealed = false;
+      var reveal = function(){
+        if(revealed) return; revealed = true;
+        inVeil.style.transition = 'opacity ' + FADE_OUT + 'ms ease';
+        root.classList.remove('entry-veil');
+        inVeil.style.opacity = '0';
+        setTimeout(function(){ dropVeil(inVeil); }, FADE_OUT + 80);
+      };
+      window.addEventListener('load', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ setTimeout(reveal, 140); }); });
+      });
+      setTimeout(reveal, 3500); // страховка, если load задержался
+    }
+  }
+
+  // ----- Уход -----
+  function onNavClick(e){
+    var a = e.currentTarget;
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if(reduceMotion()) return;
+    var to = a.getAttribute('data-nav');
+    if(!SKINS[to]) return;
+    e.preventDefault();
+    if(leaving) return;
+    leaving = true;
+    var href = a.getAttribute('href');
+    var veil = makeVeil(to);
+    veil.style.pointerEvents = 'auto';
+    if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
+    try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); }catch(err){}
+    void veil.offsetHeight;
+    veil.style.transition = 'opacity ' + FADE_IN + 'ms ease';
+    requestAnimationFrame(function(){ veil.style.opacity = '1'; });
+    setTimeout(function(){ window.location.href = href; }, FADE_IN + 40);
+  }
+  var links = document.querySelectorAll('a[data-nav]');
+  for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
+
+  // Кнопка «назад» вернула страницу из кэша браузера, пока поверх был цвет —
+  // плавно убираем его и возвращаем свой цвет системной шторки.
+  window.addEventListener('pageshow', function(ev){
+    if(!ev.persisted) return;
+    leaving = false;
+    try{ sessionStorage.removeItem(KEY); }catch(err){}
+    if(themeMeta && ownTheme) themeMeta.setAttribute('content', ownTheme);
+    var old = document.querySelectorAll('.nav-veil');
+    for(var j = 0; j < old.length; j++){
+      (function(v){
+        v.style.pointerEvents = 'none';
+        v.style.transition = 'opacity .45s ease';
+        v.style.opacity = '0';
+        setTimeout(function(){ dropVeil(v); }, 520);
+      })(old[j]);
+    }
+  });
+})();
+</script>
 </body>
 </html>

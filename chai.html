@@ -290,6 +290,35 @@
     max-width:260px; line-height:1.45;
   }
   .cat-note{font-size:.78rem; color:var(--muted); line-height:1.45; margin:0 2px 12px;}
+
+  /* ---------- Кнопки перехода между картами ---------- */
+  .nav-row{display:flex; justify-content:center; align-items:center; gap:8px; margin-top:6px;}
+  .nav-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    height:36px; padding:0 14px; border-radius:10px; text-decoration:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .nav-btn:active{transform:scale(.97);}
+  @media (hover:hover){ .nav-btn:hover{box-shadow:0 4px 14px rgba(40,25,15,.22);} }
+  .nav-home{
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.74rem; letter-spacing:.05em;
+    color:var(--accent-ink); border:1px solid var(--line); background:rgba(251,249,248,.65);
+  }
+  .nav-to-bar{
+    background-color:#241611;
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
+    background-size:420px auto, 420px auto; background-position:top center, top center;
+    border:1px solid rgba(200,138,78,0.55);
+  }
+  .nav-to-bar img{height:15px; width:auto; display:block;}
+  .nav-to-bar .nav-arr{font-family:'IBM Plex Mono',monospace; font-size:1rem; color:#C88A4E; line-height:1;}
+  .foot-date{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--accent-ink); margin-bottom:8px;
+  }
+  .nav-row{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
+  html.entry-veil .nav-row{opacity:0; transform:translateY(10px);}
 </style>
 </head>
 <body>
@@ -319,7 +348,10 @@
 <header class="topbar">
 <div class="brand">
 <h1><img alt="Чайная карта" class="brand-logo" src="logo-chai-wide.png"/></h1>
-<span class="tag">27.07.2026</span>
+<nav class="nav-row" aria-label="Переход между картами">
+<a class="nav-btn nav-home" href="index.html" data-nav="home">‹ Меню</a>
+<a class="nav-btn nav-to-bar" href="bar.html" data-nav="bar" aria-label="Барная карта"><img alt="Барная карта" src="logo-bar-wide-light.png"/><span class="nav-arr">→</span></a>
+</nav>
 </div>
 <div class="search-row">
 <input autocomplete="off" id="search" placeholder="Найти чай по названию…" type="text"/>
@@ -949,6 +981,7 @@
 <div class="no-results" id="noResults">Ничего не найдено</div>
 </main>
 <footer>
+  <div class="foot-date">Актуально на 27.07.2026</div>
   Справочник собран на основе файла ТТК_ХиП_2026.xlsx для работников сети ресторанов MKS «Хачо и Пури» и «Пхали-Хинкали».
 </footer>
 <footer class="sig">
@@ -1142,6 +1175,112 @@
         closeCard(d);
       }
     });
+  });
+})();
+</script>
+<script>
+(function(){
+  // ---------- Плавный переход между страницами: перелив цвета ----------
+  // Уходя со страницы: поверх неё плавно проступает цвет (и узор) карты, в которую
+  // идём. Приходя: страница стартует закрытой этим же цветом и плавно проявляется.
+  var OWN = 'chai';
+  var KEY = 'navfade';
+  var FADE_IN = 480, FADE_OUT = 650, OVERSCAN = 24;
+  var SKINS = {
+    chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
+    bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
+    home: { bg:'#161210', theme:'#161210' }
+  };
+  var root = document.documentElement;
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var ownTheme = themeMeta ? themeMeta.getAttribute('content') : null;
+  var leaving = false;
+
+  function reduceMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  function makeVeil(to){
+    var c = SKINS[to], v = document.createElement('div'), st = v.style;
+    v.className = 'nav-veil';
+    st.position = 'fixed';
+    st.top = st.left = st.right = st.bottom = (-OVERSCAN) + 'px';
+    st.zIndex = '2147483000'; st.opacity = '0'; st.pointerEvents = 'none';
+    st.backgroundColor = c.bg;
+    if(c.img){
+      st.backgroundImage = 'linear-gradient(' + c.tint + ',' + c.tint + '), url("' + c.img + '")';
+      st.backgroundSize = c.size + ', ' + c.size;
+      st.backgroundPosition = 'center ' + OVERSCAN + 'px, center ' + OVERSCAN + 'px';
+      st.backgroundRepeat = 'repeat';
+    }
+    root.appendChild(v);
+    return v;
+  }
+  function dropVeil(v){ if(v && v.parentNode) v.parentNode.removeChild(v); }
+
+  // ----- Приход -----
+  var flag = null;
+  try{ flag = sessionStorage.getItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+  if(flag){
+    var parts = String(flag).split('|');
+    var fresh = (Date.now() - (parseInt(parts[1], 10) || 0)) < 15000;
+    if(parts[0] === OWN && fresh && !reduceMotion()){
+      var inVeil = makeVeil(OWN);
+      inVeil.style.opacity = '1'; inVeil.style.pointerEvents = 'auto';
+      root.classList.add('entry-veil');
+      var revealed = false;
+      var reveal = function(){
+        if(revealed) return; revealed = true;
+        inVeil.style.transition = 'opacity ' + FADE_OUT + 'ms ease';
+        root.classList.remove('entry-veil');
+        inVeil.style.opacity = '0';
+        setTimeout(function(){ dropVeil(inVeil); }, FADE_OUT + 80);
+      };
+      window.addEventListener('load', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ setTimeout(reveal, 140); }); });
+      });
+      setTimeout(reveal, 3500); // страховка, если load задержался
+    }
+  }
+
+  // ----- Уход -----
+  function onNavClick(e){
+    var a = e.currentTarget;
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if(reduceMotion()) return;
+    var to = a.getAttribute('data-nav');
+    if(!SKINS[to]) return;
+    e.preventDefault();
+    if(leaving) return;
+    leaving = true;
+    var href = a.getAttribute('href');
+    var veil = makeVeil(to);
+    veil.style.pointerEvents = 'auto';
+    if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
+    try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); }catch(err){}
+    void veil.offsetHeight;
+    veil.style.transition = 'opacity ' + FADE_IN + 'ms ease';
+    requestAnimationFrame(function(){ veil.style.opacity = '1'; });
+    setTimeout(function(){ window.location.href = href; }, FADE_IN + 40);
+  }
+  var links = document.querySelectorAll('a[data-nav]');
+  for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
+
+  // Кнопка «назад» вернула страницу из кэша браузера, пока поверх был цвет —
+  // плавно убираем его и возвращаем свой цвет системной шторки.
+  window.addEventListener('pageshow', function(ev){
+    if(!ev.persisted) return;
+    leaving = false;
+    try{ sessionStorage.removeItem(KEY); }catch(err){}
+    if(themeMeta && ownTheme) themeMeta.setAttribute('content', ownTheme);
+    var old = document.querySelectorAll('.nav-veil');
+    for(var j = 0; j < old.length; j++){
+      (function(v){
+        v.style.pointerEvents = 'none';
+        v.style.transition = 'opacity .45s ease';
+        v.style.opacity = '0';
+        setTimeout(function(){ dropVeil(v); }, 520);
+      })(old[j]);
+    }
   });
 })();
 </script>
