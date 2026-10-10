@@ -155,6 +155,7 @@
   /* Приход с карты по кнопке «Меню»: страница проявляется из цвета. */
   .wrap{transition:opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);}
   html.entry-veil .wrap{opacity:0; transform:translateY(10px);}
+  .card-title-text{display:block; font-family:'Fraunces',serif; font-weight:500; font-size:1.15rem; line-height:30px; letter-spacing:-.01em; color:#F4ECDF; text-align:center;}
 </style>
 </head>
 <body>
@@ -192,21 +193,16 @@
 </section>
 
 <section class="rest-panel">
-<h2 class="rest-name">Пхали-Хинкали</h2>
+<h2 class="rest-name">Спецзаказы</h2>
 <div class="divider"></div>
 <div class="cards">
-<div class="card disabled">
+<a class="card card-bar" href="banquet.html" data-final-logo-height="30" data-final-logo-top="20" data-tile-width="420">
 <span class="card-text-center">
-<img class="tea-logo tea-logo-muted" src="logo-chai-wide.png" alt="Чайная карта"/>
-<span class="card-date">Скоро</span>
+<span class="card-title-text">Банкетный алкоголь</span>
+<span class="card-date">Спецпрайс</span>
 </span>
-</div>
-<div class="card disabled">
-<span class="card-text">
-<span class="card-name">Барная карта</span>
-<span class="card-date">Скоро</span>
-</span>
-</div>
+<span class="card-arrow-corner">→</span>
+</a>
 </div>
 </section>
 
@@ -234,6 +230,12 @@
   // нажатии "назад" — здесь будет запись, и мы аккуратно соберём карточку
   // обратно, без перезагрузки.
   var activeFlights = [];
+
+  function panelsOtherThan(link){
+    var res = [], ps = document.querySelectorAll('.rest-panel');
+    for(var i = 0; i < ps.length; i++){ if(!ps[i].contains(link)) res.push(ps[i]); }
+    return res;
+  }
 
   function cardKey(link){ return (link.getAttribute('href') || '').replace('.html', ''); }
 
@@ -300,13 +302,12 @@
           if(cardsInSamePanel[j] !== link){ siblingCard = cardsInSamePanel[j]; break; }
         }
       }
-      var panelsFwd = document.querySelectorAll('.rest-panel');
-      var secondPanelFwd = panelsFwd.length > 1 ? panelsFwd[1] : null;
+      var otherPanelsFwd = panelsOtherThan(link);
       var sigFooterFwd = document.getElementById('sigTop');
 
       var fadeOutTargets = [];
       if(siblingCard) fadeOutTargets.push(siblingCard);
-      if(secondPanelFwd) fadeOutTargets.push(secondPanelFwd);
+      for(var pf = 0; pf < otherPanelsFwd.length; pf++) fadeOutTargets.push(otherPanelsFwd[pf]);
       if(sigFooterFwd) fadeOutTargets.push(sigFooterFwd);
 
       for(var k = 0; k < fadeOutTargets.length; k++){
@@ -413,13 +414,12 @@
           if(cardsInSamePanel[j] !== link){ siblingCard = cardsInSamePanel[j]; break; }
         }
       }
-      var panels = document.querySelectorAll('.rest-panel');
-      var secondPanel = panels.length > 1 ? panels[1] : null;
+      var otherPanels = panelsOtherThan(link);
       var sigFooter = document.getElementById('sigTop');
 
       var targets = [];
       if(siblingCard) targets.push(siblingCard);
-      if(secondPanel) targets.push(secondPanel);
+      for(var po = 0; po < otherPanels.length; po++) targets.push(otherPanels[po]);
       if(sigFooter) targets.push(sigFooter);
 
       for(var k = 0; k < targets.length; k++){
@@ -575,8 +575,7 @@
 
     var sib = null, sibs = newLink.parentElement.querySelectorAll('a.card, .card.disabled');
     for(var j = 0; j < sibs.length; j++){ if(sibs[j] !== newLink){ sib = sibs[j]; break; } }
-    var panels = document.querySelectorAll('.rest-panel');
-    var faded = [sib, panels.length > 1 ? panels[1] : null, document.getElementById('sigTop')];
+    var faded = [sib, document.getElementById('sigTop')].concat(panelsOtherThan(newLink));
     for(var k = 0; k < faded.length; k++){ if(faded[k]){ faded[k].style.opacity = '0'; faded[k].style.pointerEvents = 'none'; } }
     void document.body.offsetHeight;
     return { link: newLink, clone: clone };
