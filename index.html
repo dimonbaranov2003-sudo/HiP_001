@@ -159,7 +159,9 @@
     background-image:linear-gradient(rgba(244,236,223,0.25), rgba(244,236,223,0.25)), url("bg-banquet.jpg");
     background-size:620px auto, 620px auto;
   }
-  a.card.card-banquet .tea-logo{height:21px;}
+  /* Банкетное меню — низкая кнопка вплотную под барной картой, той же ширины */
+  a.card.card-banquet{padding:9px 18px; margin-top:-4px; border-radius:12px;}
+  a.card.card-banquet .tea-logo{height:17px;}
 </style>
 </head>
 <body>
@@ -193,17 +195,9 @@
 </span>
 <span class="card-arrow-corner">→</span>
 </a>
-</div>
-</section>
-
-<section class="rest-panel">
-<h2 class="rest-name">Спецзаказы</h2>
-<div class="divider"></div>
-<div class="cards">
 <a class="card card-tea card-banquet" href="banquet.html" data-final-logo-height="24" data-final-logo-top="20" data-tile-width="620">
 <span class="card-text-center">
 <img class="tea-logo" src="logo-banquet-wide.png" alt="Банкетное меню"/>
-<span class="card-date">Спецпрайс</span>
 </span>
 <span class="card-arrow-corner">→</span>
 </a>
@@ -234,6 +228,12 @@
   // нажатии "назад" — здесь будет запись, и мы аккуратно соберём карточку
   // обратно, без перезагрузки.
   var activeFlights = [];
+
+  function siblingCardsOf(link){
+    var res = [], all = link.parentElement ? link.parentElement.querySelectorAll('a.card, .card.disabled') : [];
+    for(var i = 0; i < all.length; i++){ if(all[i] !== link) res.push(all[i]); }
+    return res;
+  }
 
   function panelsOtherThan(link){
     var res = [], ps = document.querySelectorAll('.rest-panel');
@@ -310,7 +310,7 @@
       var sigFooterFwd = document.getElementById('sigTop');
 
       var fadeOutTargets = [];
-      if(siblingCard) fadeOutTargets.push(siblingCard);
+      var sibsFwd = siblingCardsOf(link); for(var sf = 0; sf < sibsFwd.length; sf++) fadeOutTargets.push(sibsFwd[sf]);
       for(var pf = 0; pf < otherPanelsFwd.length; pf++) fadeOutTargets.push(otherPanelsFwd[pf]);
       if(sigFooterFwd) fadeOutTargets.push(sigFooterFwd);
 
@@ -422,7 +422,7 @@
       var sigFooter = document.getElementById('sigTop');
 
       var targets = [];
-      if(siblingCard) targets.push(siblingCard);
+      var sibsBack = siblingCardsOf(link); for(var sb = 0; sb < sibsBack.length; sb++) targets.push(sibsBack[sb]);
       for(var po = 0; po < otherPanels.length; po++) targets.push(otherPanels[po]);
       if(sigFooter) targets.push(sigFooter);
 
@@ -579,7 +579,7 @@
 
     var sib = null, sibs = newLink.parentElement.querySelectorAll('a.card, .card.disabled');
     for(var j = 0; j < sibs.length; j++){ if(sibs[j] !== newLink){ sib = sibs[j]; break; } }
-    var faded = [sib, document.getElementById('sigTop')].concat(panelsOtherThan(newLink));
+    var faded = siblingCardsOf(newLink).concat([document.getElementById('sigTop')], panelsOtherThan(newLink));
     for(var k = 0; k < faded.length; k++){ if(faded[k]){ faded[k].style.opacity = '0'; faded[k].style.pointerEvents = 'none'; } }
     void document.body.offsetHeight;
     return { link: newLink, clone: clone };
