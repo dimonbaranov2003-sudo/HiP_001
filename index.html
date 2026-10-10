@@ -160,7 +160,14 @@
     background-size:620px auto, 620px auto;
   }
   /* Банкетное меню — низкая кнопка вплотную под барной картой, той же ширины */
-  a.card.card-banquet{padding:9px 18px; margin-top:-4px; border-radius:12px;}
+  /* Бар + банкет — единый блок: общий контур, скруглены только внешние углы,
+     между ними тонкая медная линия (её рисует нижняя граница барной карты). */
+  a.card.card-bar{border-radius:14px 14px 0 0; border-bottom-color:rgba(200,138,78,0.6);}
+  a.card.card-banquet{
+    padding:9px 18px; margin-top:-10px; /* -10px = gap у .cards, зазор схлопывается */
+    border-radius:0 0 14px 14px;
+    border:1px solid var(--bar-line); border-top:0;
+  }
   a.card.card-banquet .tea-logo{height:17px;}
 </style>
 </head>
