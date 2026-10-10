@@ -155,7 +155,11 @@
   /* Приход с карты по кнопке «Меню»: страница проявляется из цвета. */
   .wrap{transition:opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);}
   html.entry-veil .wrap{opacity:0; transform:translateY(10px);}
-  .card-title-text{display:block; font-family:'Fraunces',serif; font-weight:500; font-size:1.15rem; line-height:30px; letter-spacing:-.01em; color:#F4ECDF; text-align:center;}
+  a.card.card-banquet{
+    background-image:linear-gradient(rgba(244,236,223,0.25), rgba(244,236,223,0.25)), url("bg-banquet.jpg");
+    background-size:620px auto, 620px auto;
+  }
+  a.card.card-banquet .tea-logo{height:21px;}
 </style>
 </head>
 <body>
@@ -196,9 +200,9 @@
 <h2 class="rest-name">Спецзаказы</h2>
 <div class="divider"></div>
 <div class="cards">
-<a class="card card-bar" href="banquet.html" data-final-logo-height="30" data-final-logo-top="20" data-tile-width="420">
+<a class="card card-tea card-banquet" href="banquet.html" data-final-logo-height="24" data-final-logo-top="20" data-tile-width="620">
 <span class="card-text-center">
-<span class="card-title-text">Банкетный алкоголь</span>
+<img class="tea-logo" src="logo-banquet-wide.png" alt="Банкетное меню"/>
 <span class="card-date">Спецпрайс</span>
 </span>
 <span class="card-arrow-corner">→</span>

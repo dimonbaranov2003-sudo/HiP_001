@@ -3,27 +3,27 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
-<meta content="#241611" name="theme-color"/>
-<title>Банкетный алкоголь</title>
+<meta content="#F4ECDF" name="theme-color"/>
+<title>Банкетное меню</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&amp;family=Manrope:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
-    --bg:#241611;
-    --surface:#241811;
-    --surface-2:#2C2015;
-    --ink:#F4ECDF;
-    --muted:#B49C89;
-    --line:rgba(200,138,78,0.28);
-    --accent:#C88A4E;
-    --accent-ink:#E8B57E;
+    --bg:#F4ECDF;
+    --surface:#FBF9F8;
+    --surface-2:#F3EDEC;
+    --ink:#332C2C;
+    --muted:#6D6262;
+    --line:#DED4D2;
+    --accent:#B7A8A8;
+    --accent-ink:#6B5858;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background-color:var(--bg);
-    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
-    background-size:420px auto, 420px auto;
+    background-image:linear-gradient(rgba(244,236,223,0.25), rgba(244,236,223,0.25)), url("bg-banquet.jpg");
+    background-size:620px auto, 620px auto;
     background-position:top center, top center;
     background-repeat:repeat, repeat;
     color:var(--ink);
@@ -244,7 +244,8 @@
   html.entry-veil .back-btn svg{opacity:0;}
 
   /* ---------- Банкетный алкоголь ---------- */
-  .brand{--logo-h:30px;}
+  .brand{--logo-h:24px;}
+  .brand-logo{height:24px;}
   .brand-title{margin:0; font-family:'Fraunces',serif; font-weight:500; font-size:1.15rem; line-height:30px; letter-spacing:-.01em; color:var(--ink);}
   .search{padding:0 0 12px;}
   .search input{
@@ -256,7 +257,7 @@
   .pills.scroll{flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;}
   .pills.scroll::-webkit-scrollbar{display:none;}
   button.pill{font-family:'Manrope',sans-serif;}
-  .pill.on{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  .pill.on{background:var(--accent-ink); border-color:var(--accent-ink); color:var(--bg);}
   .search, .pills{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
   html.entry-veil .search{opacity:0; transform:translateY(10px);}
   .demo-panel{margin-bottom:22px;}
@@ -299,7 +300,7 @@
 <header class="topbar">
 <div class="brand">
 <a class="back-btn" id="backBtn" href="index.html" data-nav="home" aria-label="В меню"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></a>
-<h1 class="brand-title">Банкетный алкоголь</h1>
+<h1><img alt="Банкетное меню" class="brand-logo" src="logo-banquet-wide.png"/></h1>
 </div>
 <div class="search"><input id="q" type="search" placeholder="Поиск: название, страна, поставщик" autocomplete="off" enterkeyhint="search"/></div>
 <nav class="pills scroll" id="pills">
@@ -320,7 +321,7 @@
 </header>
 <main id="app">
 <p class="cat-note">Банкетный спецпрайс, цена за бутылку. В банкетном бланке к итоговой сумме добавляется 10% за услугу бронирования.</p>
-<section class="demo-panel" data-cat="c0" style="--dot:#E6C97A"><div class="cat-head"><span class="dot" style="background:#E6C97A"></span><h2>Игристые вина</h2><span class="n">9</span></div>
+<section class="demo-panel" data-cat="c0" style="--dot:#C9A53A"><div class="cat-head"><span class="dot" style="background:#C9A53A"></span><h2>Игристые вина</h2><span class="n">9</span></div>
 <div class="item" data-s="эндемы рислинг россия эковайн 750 игристые вина"><div class="it-main"><span class="it-name">Эндемы Рислинг</span><span class="it-sub">Россия · 750 мл · Эковайн</span></div><span class="it-price">950 ₽</span></div>
 <div class="item" data-s="асти дольче италия вельд 750 игристые вина"><div class="it-main"><span class="it-name">Асти Дольче</span><span class="it-sub">Италия · 750 мл · Вельд</span><span class="it-note">появится в декабре</span></div><span class="it-price">1 450 ₽</span></div>
 <div class="item" data-s="просекко брют «вальвазоре» миллезимато италия эковайн 750 игристые вина"><div class="it-main"><span class="it-name">Просекко Брют «Вальвазоре» Миллезимато</span><span class="it-sub">Италия · 750 мл · Эковайн</span></div><span class="it-price">1 450 ₽</span></div>
@@ -331,7 +332,7 @@
 <div class="item" data-s="кава дос капричос шардоне брют испания симпл 750 игристые вина"><div class="it-main"><span class="it-name">Кава Дос Капричос Шардоне Брют</span><span class="it-sub">Испания · 750 мл · Симпл</span></div><span class="it-price">1 900 ₽</span></div>
 <div class="item" data-s="гранд кюве 1531 креман де лиму розе франция симпл 750 игристые вина"><div class="it-main"><span class="it-name">Гранд Кюве 1531 Креман де Лиму Розе</span><span class="it-sub">Франция · 750 мл · Симпл</span></div><span class="it-price">2 500 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c1" style="--dot:#D9CF8A"><div class="cat-head"><span class="dot" style="background:#D9CF8A"></span><h2>Белые вина</h2><span class="n">13</span></div>
+<section class="demo-panel" data-cat="c1" style="--dot:#A8A24A"><div class="cat-head"><span class="dot" style="background:#A8A24A"></span><h2>Белые вина</h2><span class="n">13</span></div>
 <div class="item" data-s="шардоне селар чили симпл 750 белые вина"><div class="it-main"><span class="it-name">Шардоне Селар</span><span class="it-sub">Чили · 750 мл · Симпл</span></div><span class="it-price">990 ₽</span></div>
 <div class="item" data-s="шенен блан африканский горизонт юар премьер вайн 750 белые вина"><div class="it-main"><span class="it-name">Шенен Блан Африканский Горизонт</span><span class="it-sub">ЮАР · 750 мл · Премьер Вайн</span><span class="it-note">появится в декабре</span></div><span class="it-price">1 100 ₽</span></div>
 <div class="item" data-s="конде де монтерросо вердехо испания рафаэлов 750 белые вина"><div class="it-main"><span class="it-name">Конде Де Монтерросо Вердехо</span><span class="it-sub">Испания · 750 мл · Рафаэлов</span></div><span class="it-price">1 190 ₽</span></div>
@@ -346,7 +347,7 @@
 <div class="item" data-s="совиньон блан ронко маргарита италия плутон 750 белые вина"><div class="it-main"><span class="it-name">Совиньон Блан Ронко Маргарита</span><span class="it-sub">Италия · 750 мл · Плутон</span></div><span class="it-price">1 990 ₽</span></div>
 <div class="item" data-s="агуазуль вердехо испания эковайн 750 белые вина"><div class="it-main"><span class="it-name">Агуазуль Вердехо</span><span class="it-sub">Испания · 750 мл · Эковайн</span><span class="it-note">цена не задана</span></div><span class="it-price">—</span></div>
 </section>
-<section class="demo-panel" data-cat="c2" style="--dot:#B5495B"><div class="cat-head"><span class="dot" style="background:#B5495B"></span><h2>Красные вина</h2><span class="n">21</span></div>
+<section class="demo-panel" data-cat="c2" style="--dot:#A8455A"><div class="cat-head"><span class="dot" style="background:#A8455A"></span><h2>Красные вина</h2><span class="n">21</span></div>
 <div class="item" data-s="саперави мравали грузия плутон 750 красные вина"><div class="it-main"><span class="it-name">Саперави Мравали</span><span class="it-sub">Грузия · 750 мл · Плутон</span></div><span class="it-price">1 190 ₽</span></div>
 <div class="item" data-s="примитиво тарантино  рафаэлов 750 красные вина"><div class="it-main"><span class="it-name">Примитиво Тарантино</span><span class="it-sub">750 мл · Рафаэлов</span></div><span class="it-price">1 250 ₽</span></div>
 <div class="item" data-s="киндзмараули мравали грузия плутон 750 красные вина"><div class="it-main"><span class="it-name">Киндзмараули Мравали</span><span class="it-sub">Грузия · 750 мл · Плутон</span></div><span class="it-price">1 490 ₽</span></div>
@@ -369,58 +370,58 @@
 <div class="item" data-s="хванчкара мартла грузия премьер вайн 750 красные вина"><div class="it-main"><span class="it-name">Хванчкара Мартла</span><span class="it-sub">Грузия · 750 мл · Премьер Вайн</span><span class="it-note">появится в декабре</span></div><span class="it-price">2 100 ₽</span></div>
 <div class="item" data-s="дафне темпранильо бодегас мансанос наварра испания симпл 750 красные вина"><div class="it-main"><span class="it-name">Дафне Темпранильо Бодегас Мансанос Наварра</span><span class="it-sub">Испания · 750 мл · Симпл</span><span class="it-note">цена не задана</span></div><span class="it-price">—</span></div>
 </section>
-<section class="demo-panel" data-cat="c3" style="--dot:#8FB7D4"><div class="cat-head"><span class="dot" style="background:#8FB7D4"></span><h2>Водка</h2><span class="n">4</span></div>
+<section class="demo-panel" data-cat="c3" style="--dot:#5B8DB0"><div class="cat-head"><span class="dot" style="background:#5B8DB0"></span><h2>Водка</h2><span class="n">4</span></div>
 <div class="item" data-s="царская оригинальная россия ладога 1000 водка"><div class="it-main"><span class="it-name">Царская Оригинальная</span><span class="it-sub">Россия · 1000 мл · Ладога</span></div><span class="it-price">1 590 ₽</span></div>
 <div class="item" data-s="царская золотая россия ладога 1000 водка"><div class="it-main"><span class="it-name">Царская Золотая</span><span class="it-sub">Россия · 1000 мл · Ладога</span></div><span class="it-price">1 990 ₽</span></div>
 <div class="item" data-s="белуга нобле россия белуга 1000 водка"><div class="it-main"><span class="it-name">Белуга Нобле</span><span class="it-sub">Россия · 1000 мл · Белуга</span></div><span class="it-price">2 800 ₽</span></div>
 <div class="item" data-s="онегин россия симпл 1000 водка"><div class="it-main"><span class="it-name">Онегин</span><span class="it-sub">Россия · 1000 мл · Симпл</span></div><span class="it-price">3 300 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c4" style="--dot:#C88A4E"><div class="cat-head"><span class="dot" style="background:#C88A4E"></span><h2>Виски</h2><span class="n">5</span></div>
+<section class="demo-panel" data-cat="c4" style="--dot:#B8763A"><div class="cat-head"><span class="dot" style="background:#B8763A"></span><h2>Виски</h2><span class="n">5</span></div>
 <div class="item" data-s="баллантайнс шотландия аст 750 виски"><div class="it-main"><span class="it-name">Баллантайнс</span><span class="it-sub">Шотландия · 750 мл · АСТ</span></div><span class="it-price">2 390 ₽</span></div>
 <div class="item" data-s="дюарс белая этикетка шотландия неско 700 виски"><div class="it-main"><span class="it-name">Дюарс Белая Этикетка</span><span class="it-sub">Шотландия · 700 мл · Неско</span></div><span class="it-price">2 590 ₽</span></div>
 <div class="item" data-s="джэк дэниелс сша аст 700 виски"><div class="it-main"><span class="it-name">Джэк Дэниелс</span><span class="it-sub">США · 700 мл · АСТ</span></div><span class="it-price">2 790 ₽</span></div>
 <div class="item" data-s="«джемесон» ирландия эковайн 1000 виски"><div class="it-main"><span class="it-name">«Джемесон»</span><span class="it-sub">Ирландия · 1000 мл · Эковайн</span></div><span class="it-price">3 990 ₽</span></div>
 <div class="item" data-s="макаллан дабл каск коллекшен выдержка 12 лет шотландия эковайн 700 виски"><div class="it-main"><span class="it-name">Макаллан Дабл Каск Коллекшен Выдержка 12 Лет</span><span class="it-sub">Шотландия · 700 мл · Эковайн</span><span class="it-note">уточнить по наличию</span></div><span class="it-price">10 150 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c5" style="--dot:#B8743A"><div class="cat-head"><span class="dot" style="background:#B8743A"></span><h2>Коньяк</h2><span class="n">4</span></div>
+<section class="demo-panel" data-cat="c5" style="--dot:#8A5230"><div class="cat-head"><span class="dot" style="background:#8A5230"></span><h2>Коньяк</h2><span class="n">4</span></div>
 <div class="item" data-s="асканели 3* грузия лудинг 500 коньяк"><div class="it-main"><span class="it-name">Асканели 3*</span><span class="it-sub">Грузия · 500 мл · Лудинг</span></div><span class="it-price">1 900 ₽</span></div>
 <div class="item" data-s="ани арарат 7* армения лудинг 700 коньяк"><div class="it-main"><span class="it-name">Ани Арарат 7*</span><span class="it-sub">Армения · 700 мл · Лудинг</span></div><span class="it-price">3 650 ₽</span></div>
 <div class="item" data-s="«рулле» всоп франция ладога 700 коньяк"><div class="it-main"><span class="it-name">«Рулле» ВСОП</span><span class="it-sub">Франция · 700 мл · Ладога</span></div><span class="it-price">4 390 ₽</span></div>
 <div class="item" data-s="коньяк талавари болеро 3 * грузия эковайн 500 коньяк"><div class="it-main"><span class="it-name">Коньяк Талавари Болеро 3 *</span><span class="it-sub">Грузия · 500 мл · Эковайн</span><span class="it-note">цена не задана</span></div><span class="it-price">—</span></div>
 </section>
-<section class="demo-panel" data-cat="c6" style="--dot:#7FB08A"><div class="cat-head"><span class="dot" style="background:#7FB08A"></span><h2>Джин</h2><span class="n">3</span></div>
+<section class="demo-panel" data-cat="c6" style="--dot:#5C8A63"><div class="cat-head"><span class="dot" style="background:#5C8A63"></span><h2>Джин</h2><span class="n">3</span></div>
 <div class="item" data-s="хопперс мандарин россия симпл 500 джин"><div class="it-main"><span class="it-name">Хопперс Мандарин</span><span class="it-sub">Россия · 500 мл · Симпл</span></div><span class="it-price">1 200 ₽</span></div>
 <div class="item" data-s="джин нива дистеллери  центробалт 750 джин"><div class="it-main"><span class="it-name">Джин Нива Дистеллери</span><span class="it-sub">750 мл · Центробалт</span></div><span class="it-price">1 300 ₽</span></div>
 <div class="item" data-s="барристер олд том джин россия ладога 700 джин"><div class="it-main"><span class="it-name">Барристер Олд Том Джин</span><span class="it-sub">Россия · 700 мл · Ладога</span></div><span class="it-price">1 350 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c7" style="--dot:#C27C4A"><div class="cat-head"><span class="dot" style="background:#C27C4A"></span><h2>Ром</h2><span class="n">3</span></div>
+<section class="demo-panel" data-cat="c7" style="--dot:#A0522D"><div class="cat-head"><span class="dot" style="background:#A0522D"></span><h2>Ром</h2><span class="n">3</span></div>
 <div class="item" data-s="барсело доминиканская республика белуга 1000 ром"><div class="it-main"><span class="it-name">Барсело</span><span class="it-sub">Доминиканская Республика · 1000 мл · Белуга</span></div><span class="it-price">2 100 ₽</span></div>
 <div class="item" data-s="рон каладос дарк великобритания симпл 700 ром"><div class="it-main"><span class="it-name">Рон Каладос Дарк</span><span class="it-sub">Великобритания · 700 мл · Симпл</span></div><span class="it-price">2 250 ₽</span></div>
 <div class="item" data-s="оакхарт ориджинал италия неско 1000 ром"><div class="it-main"><span class="it-name">Оакхарт Ориджинал</span><span class="it-sub">Италия · 1000 мл · Неско</span></div><span class="it-price">2 750 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c8" style="--dot:#9A7BC0"><div class="cat-head"><span class="dot" style="background:#9A7BC0"></span><h2>Чача</h2><span class="n">4</span></div>
+<section class="demo-panel" data-cat="c8" style="--dot:#8C6F9E"><div class="cat-head"><span class="dot" style="background:#8C6F9E"></span><h2>Чача</h2><span class="n">4</span></div>
 <div class="item" data-s="чача «асканели платиновая» 40 грузия лудинг 500 чача"><div class="it-main"><span class="it-name">Чача «Асканели Платиновая» 40</span><span class="it-sub">Грузия · 500 мл · Лудинг</span></div><span class="it-price">1 700 ₽</span></div>
 <div class="item" data-s="чача «асканели золотая» выдержанная 40 грузия лудинг 500 чача"><div class="it-main"><span class="it-name">Чача «Асканели Золотая» выдержанная 40</span><span class="it-sub">Грузия · 500 мл · Лудинг</span></div><span class="it-price">1 750 ₽</span></div>
 <div class="item" data-s="чача «гиоргоба голд» 44 азербайджан плутон 500 чача"><div class="it-main"><span class="it-name">Чача «Гиоргоба Голд» 44</span><span class="it-sub">Азербайджан · 500 мл · Плутон</span></div><span class="it-price">1 850 ₽</span></div>
 <div class="item" data-s="чача «гиоргоба голд» выдержанная 44 азербайджан плутон 500 чача"><div class="it-main"><span class="it-name">Чача «Гиоргоба Голд» выдержанная 44</span><span class="it-sub">Азербайджан · 500 мл · Плутон</span></div><span class="it-price">2 100 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c9" style="--dot:#D8B04A"><div class="cat-head"><span class="dot" style="background:#D8B04A"></span><h2>Текила</h2><span class="n">3</span></div>
+<section class="demo-panel" data-cat="c9" style="--dot:#B8902E"><div class="cat-head"><span class="dot" style="background:#B8902E"></span><h2>Текила</h2><span class="n">3</span></div>
 <div class="item" data-s="буэн амиго сильвер мексика лудинг 1000 текила"><div class="it-main"><span class="it-name">Буэн Амиго Сильвер</span><span class="it-sub">Мексика · 1000 мл · Лудинг</span></div><span class="it-price">2 700 ₽</span></div>
 <div class="item" data-s="буэн амиго голд мексика лудинг 1000 текила"><div class="it-main"><span class="it-name">Буэн Амиго Голд</span><span class="it-sub">Мексика · 1000 мл · Лудинг</span></div><span class="it-price">2 700 ₽</span></div>
 <div class="item" data-s="«текила ольмека сильвер» мексика эковайн 1000 текила"><div class="it-main"><span class="it-name">«Текила Ольмека Сильвер»</span><span class="it-sub">Мексика · 1000 мл · Эковайн</span><span class="it-note">уточнить по наличию</span></div><span class="it-price">3 590 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c10" style="--dot:#E0684F"><div class="cat-head"><span class="dot" style="background:#E0684F"></span><h2>Аперитив</h2><span class="n">2</span></div>
+<section class="demo-panel" data-cat="c10" style="--dot:#C4553F"><div class="cat-head"><span class="dot" style="background:#C4553F"></span><h2>Аперитив</h2><span class="n">2</span></div>
 <div class="item" data-s="люксардо аперитиво италия эковайн 750 аперитив"><div class="it-main"><span class="it-name">Люксардо Аперитиво</span><span class="it-sub">Италия · 750 мл · Эковайн</span></div><span class="it-price">2 500 ₽</span></div>
 <div class="item" data-s="люксардо биттер италия эковайн 750 аперитив"><div class="it-main"><span class="it-name">Люксардо Биттер</span><span class="it-sub">Италия · 750 мл · Эковайн</span></div><span class="it-price">2 790 ₽</span></div>
 </section>
-<section class="demo-panel" data-cat="c11" style="--dot:#B889B8"><div class="cat-head"><span class="dot" style="background:#B889B8"></span><h2>Вермут</h2><span class="n">1</span></div>
+<section class="demo-panel" data-cat="c11" style="--dot:#8E5C8E"><div class="cat-head"><span class="dot" style="background:#8E5C8E"></span><h2>Вермут</h2><span class="n">1</span></div>
 <div class="item" data-s="мартини бьянко, розе, россо, экстра драй, фиеро италия неско 1000 вермут"><div class="it-main"><span class="it-name">Мартини Бьянко, Розе, Россо, Экстра Драй, Фиеро</span><span class="it-sub">Италия · 1000 мл · Неско</span></div><span class="it-price">2 300 ₽</span></div>
 </section>
 <p class="empty" id="empty" hidden>Ничего не найдено</p>
 </main>
 <footer class="sig">
   <input type="checkbox" id="sig-toggle" class="sig-input"/>
-  <label for="sig-toggle" class="sig-name"><img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/></label>
+  <label for="sig-toggle" class="sig-name"><img alt="d.b wish" class="sig-logo" src="sig-wish-tea.png"/></label>
   <div class="sig-reveal">
     <a class="sig-tg" href="https://t.me/wish_tgm" target="_blank" rel="noopener">@wish_tgm</a>
     <span class="sig-caption">Пишите по предложениям и изменениям под ваши конкретные желания</span>
@@ -460,7 +461,7 @@
   var SKINS = {
     chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
     bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
-    banquet: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
+    banquet: { bg:'#F4ECDF', img:'bg-banquet.jpg', tint:'rgba(244,236,223,0.25)', size:'620px auto', theme:'#F4ECDF' },
     home: { bg:'#161210', theme:'#161210' }
   };
   var root = document.documentElement;
