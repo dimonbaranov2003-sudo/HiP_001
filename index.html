@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
-<meta content="#161210" name="theme-color"/>
+<meta content="#B39B85" name="theme-color"/>
 <title>Wish Ember · Хачо и Пури / Пхали-Хинкали</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&amp;family=Manrope:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
-    --page-bg:#161210;
-    --panel-bg:#1B1613;
-    --panel-line:#2C221B;
+    --page-bg:#B39B85;
+    --panel-bg:rgba(104,76,52,0.16);
+    --panel-line:rgba(255,243,228,0.32);
     --ink:#F4ECDF;
-    --muted:#96877A;
+    --muted:#6B5342;
     --accent:#C88A4E;
     --accent-line:rgba(200,138,78,0.30);
 
@@ -169,6 +169,13 @@
     border:1px solid var(--bar-line); border-top:0;
   }
   a.card.card-banquet .tea-logo{height:17px;}
+  /* ---------- Осенняя тема главной ---------- */
+  html{background:#B39B85 url("bg-autumn.jpg") center top / cover no-repeat; min-height:100%;}
+  body{background:transparent;}
+  .rest-panel{box-shadow:0 10px 26px -14px rgba(60,35,18,0.4);}
+  a.card{box-shadow:0 6px 14px -7px rgba(45,25,12,0.5);}
+  .sig-logo{filter:brightness(.66) saturate(1.15);}
+  .sig-tg{color:#6E4727; border-bottom-color:rgba(110,71,39,0.45);}
 </style>
 </head>
 <body>
@@ -642,7 +649,7 @@
   var SKINS = {
     chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
     bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
-    home: { bg:'#161210', theme:'#161210' }
+    home: { bg:'#B39B85', img:'bg-autumn.jpg', tint:'rgba(179,155,133,0)', size:'cover', theme:'#B39B85' }
   };
   var root = document.documentElement;
   var themeMeta = document.querySelector('meta[name="theme-color"]');
