@@ -450,7 +450,8 @@
       for(var k = 0; k < targets.length; k++){
         var el = targets[k];
         if(staggered){
-          el.style.transition = 'opacity ' + FADE_MS + 'ms ease ' + (k * FADE_STAGGER_MS) + 'ms';
+          // зеркало вылета: остальные проявляются только в самом конце сжатия, а не под большим клоном
+          el.style.transition = 'opacity ' + FADE_OUT_MS + 'ms ease-in-out ' + Math.max(0, TOTAL_MS + GROW_DELAY_MS - FADE_OUT_MS) + 'ms';
           el.style.opacity = (el.matches && el.matches('a.card, .card.disabled')) ? CARD_OPACITY : '1';
         } else {
           el.style.transition = '';
@@ -473,8 +474,6 @@
     var cloneArrow = clone.querySelector('.card-arrow-corner');
     var tileW = parseInt(clone.getAttribute('data-tile-width'), 10);
     if(isNaN(tileW)) tileW = 460;
-
-    restoreOtherContent(true);
 
     clone.style.transition =
       'top ' + TOTAL_MS + 'ms ' + EASE + ',' +
@@ -514,6 +513,7 @@
     function startShrink(){
       requestAnimationFrame(function(){
         requestAnimationFrame(function(){
+          restoreOtherContent(true); // отсчёт «проявления остальных» идёт от старта сжатия
           var rectNow = link.getBoundingClientRect();
           var naturalTextTopNow = rectNow.top;
           if(cloneText){
