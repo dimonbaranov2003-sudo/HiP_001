@@ -320,6 +320,28 @@
   body.kp-open .inv-dock{display:none;}
   body.kp-open main{padding-bottom:360px;}
   .inv-in.act{border-color:var(--accent-ink); background:var(--surface); box-shadow:0 0 0 3px rgba(107,88,88,.2);}
+  /* ---------- Как в чайной карте: компактные позиции ---------- */
+  main{padding:14px 14px 130px;}
+  body.kp-open main{padding-bottom:300px;}
+  .search input{padding:9px 12px; font-size:.9rem; border-radius:9px;}
+  .pills.scroll{flex-wrap:wrap; overflow:visible; gap:7px;}
+  .pill{font-size:.68rem; padding:5px 9px; border-radius:7px; border:1.5px solid var(--line);}
+  .pill.on{border-color:var(--accent-ink);}
+  .cat-head{margin:0 0 10px 2px;}
+  .cat-head h2{font-size:1.08rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-head .n{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted);}
+  .demo-panel{margin-bottom:18px;}
+  .item{padding:8px 10px 8px 12px; margin-bottom:9px; border-radius:8px; align-items:center; gap:10px;}
+  .it-name{font-size:1.02rem; line-height:1.25;}
+  .inv-fields{gap:6px; align-items:center;}
+  .inv-fld{align-items:flex-end; gap:2px;}
+  .inv-in{width:76px; font-size:.92rem; padding:6px 9px; border-radius:7px;}
+  .inv-in::placeholder{color:var(--muted); opacity:.55; font-weight:500;}
+  .v-sum{min-height:0; font-size:.7rem;}
+  .inv-mode{font-size:.76rem; margin:0 0 14px;}
+  .inv-send{padding:11px 18px; font-size:.9rem;}
+  .kp-grid{gap:6px;} .kp-grid button{height:44px; font-size:1.2rem;}
+  .kp-top{padding:0 4px 6px;}
 </style>
 </head>
 <body>
@@ -407,8 +429,8 @@
     POS.filter(function(p){return p.g===g.k;}).forEach(function(p){
       var tea=p.g==='tea', row=document.createElement('div'); row.className='item'; row.setAttribute('data-id',p.id); row.setAttribute('data-s',norm(p.n+' '+g.t));
       row.innerHTML='<div class="it-main"><span class="it-name"></span></div>'+
-        '<div class="inv-fields"><div class="inv-fld"><label>ОСТАТОК, '+p.u.toUpperCase()+'</label><input class="inv-in v-in" inputmode="none" readonly autocomplete="off"/><span class="v-sum"></span></div>'+
-        (p.d?'<div class="inv-fld inv-bd"><label>БОЙ/ПОРЧА</label><input class="inv-in bd-in" inputmode="none" readonly autocomplete="off"/></div>':'')+'</div>';
+        '<div class="inv-fields"><div class="inv-fld"><input class="inv-in v-in" inputmode="none" readonly placeholder="'+p.u+'" autocomplete="off"/><span class="v-sum"></span></div>'+
+        (p.d?'<div class="inv-fld inv-bd"><input class="inv-in bd-in" inputmode="none" readonly placeholder="бой" autocomplete="off"/></div>':'')+'</div>';
       row.querySelector('.it-name').textContent=p.n;
       var vi=row.querySelector('.v-in'), sm=row.querySelector('.v-sum'); vi.value=S.v[p.id]||''; vi.classList.toggle('has',has(p.id));
       function showSum(){ var raw=vi.value||'', t=num(raw); sm.textContent=(/.[+\-]/.test(raw.replace(/\s+/g,''))&&t!==null)?'= '+t:''; }
@@ -447,7 +469,7 @@
     if(!inp){ kp.hidden=true; document.body.classList.remove('kp-open'); return; }
     inp.classList.add('act'); kp.hidden=false; document.body.classList.add('kp-open');
     var r=inp.closest('.item'); $('kp-name').textContent=r.querySelector('.it-name').textContent+(inp.classList.contains('bd-in')?' · бой/порча':'');
-    kpSum(); setTimeout(function(){ try{ r.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){ r.scrollIntoView(); } },60);
+    kpSum(); setTimeout(function(){ var b=r.getBoundingClientRect(), vis=window.innerHeight-kp.offsetHeight; if(b.bottom>vis-8) window.scrollBy({top:b.bottom-vis+16,behavior:'smooth'}); else if(b.top<56) window.scrollBy({top:b.top-70,behavior:'smooth'}); },60);
   }
   function key(k){
     if(!act) return; var v=act.value;
@@ -464,7 +486,7 @@
     var all=Array.prototype.filter.call(list.querySelectorAll('.v-in,.bd-in'),function(i){ return i.offsetParent!==null; }), idx=all.indexOf(act);
     if(idx>-1&&idx<all.length-1) setAct(all[idx+1]); else setAct(null);
   });
-  document.addEventListener('pointerdown',function(e){ if(kp.hidden) return; if(e.target.closest&&(e.target.closest('#kp')||e.target.closest('.inv-in')||e.target.closest('#modal'))) return; setAct(null); });
+  document.addEventListener('click',function(e){ if(kp.hidden) return; if(e.target.closest&&(e.target.closest('#kp')||e.target.closest('.inv-in')||e.target.closest('#modal'))) return; setAct(null); });
 
   // ---------- сборка бланка ----------
   var modal=$('modal'), sheet=$('sheet'), file=null, libP=null, tplP=null;
