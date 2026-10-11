@@ -176,6 +176,9 @@
   a.card{box-shadow:0 6px 14px -7px rgba(45,25,12,0.5);}
   .sig-logo{filter:brightness(.66) saturate(1.15);}
   .sig-tg{color:#6E4727; border-bottom-color:rgba(110,71,39,0.45);}
+  /* Кнопки главной чуть прозрачные + без стрелок справа */
+  a.card{opacity:0.86;}
+  a.card .card-arrow-corner{display:none;}
 </style>
 </head>
 <body>
@@ -186,8 +189,7 @@
     <img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/>
   </button>
   <div class="sig-msg">
-    <a class="sig-tg" href="https://t.me/wish_tgm" target="_blank" rel="noopener">@wish_tgm</a>
-    <span class="sig-caption">Пишите по предложениям и изменениям под ваши конкретные желания</span>
+    <a class="sig-tg" href="https://t.me/wish_adc" target="_blank" rel="noopener">@wish_adc</a>
   </div>
 </div>
 
@@ -226,6 +228,7 @@
   var TOTAL_MS = 1100;        // единая длительность роста/сжатия кнопки — двигается ВСЁ разом, с этой же скоростью едет и текст
   var TEXT_FADE_MS = 240;     // сколько длится исчезновение текста в самом конце полёта
   var CLONE_FADE_MS = 380;    // при возврате: плавное растворение клона в настоящую (уже с узором) кнопку — без щелчка
+  var CARD_OPACITY = '0.86'; // должно совпадать с opacity у a.card в CSS
   var OVERSCAN = 24;          // запас за края экрана — гарантирует идеальную заливку без шва по краю
   var FADE_MS = 360;          // длительность угасания/проявления каждого из остальных элементов
   var FADE_STAGGER_MS = 130;  // и шаг между ними — один за другим, а не разом
@@ -363,7 +366,8 @@
         'width ' + TOTAL_MS + 'ms ' + EASE + ',' +
         'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
         'background-position ' + TOTAL_MS + 'ms ' + EASE + ',' +
-        'border-radius ' + TOTAL_MS + 'ms ' + EASE;
+        'border-radius ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TOTAL_MS + 'ms ' + EASE;
       if(cloneText){
         cloneText.style.transition = 'top ' + TOTAL_MS + 'ms ' + EASE + ', gap ' + TOTAL_MS + 'ms ' + EASE;
       }
@@ -387,6 +391,7 @@
           clone.style.width = (window.innerWidth + OVERSCAN * 2) + 'px';
           clone.style.height = (window.innerHeight + OVERSCAN * 2) + 'px';
           clone.style.borderRadius = '0px';
+          clone.style.opacity = '1'; // непрозрачность уходит плавно вместе с ростом
           // Точка отсчёта узора — ровно та же, что будет у настоящей страницы
           // назначения (её фон всегда «top center» относительно всего экрана).
           var bgX = (window.innerWidth - tileW) / 2 + OVERSCAN;
@@ -444,7 +449,7 @@
         var el = targets[k];
         if(staggered){
           el.style.transition = 'opacity ' + FADE_MS + 'ms ease ' + (k * FADE_STAGGER_MS) + 'ms';
-          el.style.opacity = '1';
+          el.style.opacity = (el.matches && el.matches('a.card, .card.disabled')) ? CARD_OPACITY : '1';
         } else {
           el.style.transition = '';
           el.style.opacity = '';
@@ -475,7 +480,8 @@
       'width ' + TOTAL_MS + 'ms ' + EASE + ',' +
       'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
       'background-position ' + TOTAL_MS + 'ms ' + EASE + ',' +
-      'border-radius ' + TOTAL_MS + 'ms ' + EASE;
+      'border-radius ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TOTAL_MS + 'ms ' + EASE;
     if(cloneText){
       cloneText.style.transition = 'top ' + TOTAL_MS + 'ms ' + EASE + ', gap ' + TOTAL_MS + 'ms ' + EASE;
     }
@@ -519,6 +525,7 @@
           clone.style.width = rectNow.width + 'px';
           clone.style.height = rectNow.height + 'px';
           clone.style.borderRadius = realRadiusNow;
+          clone.style.opacity = CARD_OPACITY; // возвращаем прозрачность кнопки
           // Возвращаем узор туда же, где он был у кнопки в естественном состоянии
           // (до клика) — то есть «top center» относительно самой карточки.
           var bgXBack = (rectNow.width - tileW) / 2;
@@ -581,7 +588,7 @@
     st.top = (-OVERSCAN) + 'px'; st.left = (-OVERSCAN) + 'px';
     st.width = (window.innerWidth + OVERSCAN * 2) + 'px';
     st.height = (window.innerHeight + OVERSCAN * 2) + 'px';
-    st.zIndex = '99999'; st.pointerEvents = 'none'; st.borderRadius = '0px'; st.willChange = 'top, left, width, height';
+    st.zIndex = '99999'; st.pointerEvents = 'none'; st.borderRadius = '0px'; st.opacity = '1'; st.willChange = 'top, left, width, height';
     st.backgroundPosition = '0px 0px, ' + ((window.innerWidth - tileW) / 2 + OVERSCAN) + 'px ' + OVERSCAN + 'px';
     var cText = clone.querySelector('.card-text-center');
     if(cText){ cText.style.position = 'fixed'; cText.style.left = '0'; cText.style.top = finalLogoTop + 'px'; cText.style.margin = '0'; cText.style.gap = '3px'; }
