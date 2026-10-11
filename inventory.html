@@ -268,6 +268,7 @@
   .it-price{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.92rem; color:var(--accent-ink); white-space:nowrap; flex:0 0 auto;}
   .empty{text-align:center; color:var(--muted); font-size:.85rem; padding:30px 0;}
   .empty[hidden]{display:none;}
+  .item[hidden]{display:none !important;}
 
   /* ---------- Инвента ---------- */
   .brand{--logo-h:30px;}
@@ -305,6 +306,20 @@
   .inv-sheet p{margin:0 0 4px; font-size:.84rem; color:var(--muted); line-height:1.4; word-break:break-word;}
   .inv-sheet button{font:700 .95rem 'Manrope',sans-serif; border-radius:12px; padding:13px; border:1.5px solid var(--accent-ink); background:var(--surface); color:var(--accent-ink);}
   .inv-sheet button.main{background:var(--accent-ink); color:var(--bg);}
+  .inv-kp{position:fixed; left:0; right:0; bottom:0; z-index:90; background:var(--bg); border-top:1px solid var(--line); padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px)); box-shadow:0 -10px 24px -14px rgba(50,35,35,.5); user-select:none; -webkit-user-select:none;}
+  .inv-kp[hidden]{display:none;}
+  .kp-top{display:flex; align-items:center; gap:10px; padding:2px 4px 8px;}
+  .kp-name{flex:1; min-width:0; font-family:'Fraunces',serif; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .kp-sum{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.85rem; color:var(--accent-ink);}
+  .kp-done{font:700 .85rem 'Manrope',sans-serif; color:var(--accent-ink); background:none; border:none; padding:6px 8px;}
+  .kp-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:7px;}
+  .kp-grid button{font:600 1.35rem 'IBM Plex Mono',monospace; height:50px; border-radius:11px; border:1px solid var(--line); background:var(--surface); color:var(--ink); touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
+  .kp-grid button:active{background:var(--surface-2);}
+  .kp-grid .op{color:var(--accent-ink); background:var(--surface-2);}
+  .kp-grid .next{grid-column:span 2; background:var(--accent-ink); color:var(--bg); border-color:var(--accent-ink); font:700 1rem 'Manrope',sans-serif;}
+  body.kp-open .inv-dock{display:none;}
+  body.kp-open main{padding-bottom:360px;}
+  .inv-in.act{border-color:var(--accent-ink); background:var(--surface); box-shadow:0 0 0 3px rgba(107,88,88,.2);}
 </style>
 </head>
 <body>
@@ -353,6 +368,14 @@
 <button class="inv-reset" id="reset" type="button">Начать новую инвенту</button>
 </main>
 <div class="inv-dock"><span class="inv-prog" id="prog"></span><button class="inv-send" id="send" type="button">Собрать бланк</button></div>
+<div class="inv-kp" id="kp" hidden>
+<div class="kp-top"><span class="kp-name" id="kp-name"></span><span class="kp-sum" id="kp-sum"></span><button type="button" class="kp-done" id="kp-done">Готово</button></div>
+<div class="kp-grid">
+<button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" class="op" data-k="del">⌫</button>
+<button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" class="op" data-k="+">+</button>
+<button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" class="op" data-k="-">−</button>
+<button type="button" data-k=",">,</button><button type="button" data-k="0">0</button><button type="button" class="next" id="kp-next">Далее</button>
+</div></div>
 <div class="inv-modal" id="modal" hidden><div class="inv-sheet" id="sheet"></div></div>
 <footer class="sig">
   <input type="checkbox" id="sig-toggle" class="sig-input"/>
@@ -383,27 +406,15 @@
     sec.innerHTML='<div class="cat-head"><span class="dot" style="background:'+g.dot+'"></span><h2>'+g.t+'</h2><span class="n"></span></div>';
     POS.filter(function(p){return p.g===g.k;}).forEach(function(p){
       var tea=p.g==='tea', row=document.createElement('div'); row.className='item'; row.setAttribute('data-id',p.id); row.setAttribute('data-s',norm(p.n+' '+g.t));
-      row.innerHTML='<div class="it-main"><span class="it-name"></span>'+(tea?'<button class="inv-tare-btn" type="button">⚖ взвесить с тарой</button>':'')+'</div>'+
-        '<div class="inv-fields"><div class="inv-fld"><label>ОСТАТОК, '+p.u.toUpperCase()+'</label><div class="inv-row"><button class="inv-plus" type="button" tabindex="-1" aria-label="плюс">+</button><input class="inv-in v-in" inputmode="decimal" autocomplete="off"/></div><span class="v-sum"></span></div>'+
-        (p.d?'<div class="inv-fld inv-bd"><label>БОЙ/ПОРЧА</label><input class="inv-in bd-in" inputmode="decimal" autocomplete="off"/></div>':'')+'</div>'+
-        (tea?'<div class="inv-tare" hidden><div class="inv-fld"><label>С ТАРОЙ, ГР.</label><input class="inv-in g-in" inputmode="decimal" autocomplete="off"/></div><div class="inv-fld"><label>ТАРА, ГР.</label><input class="inv-in t-in" inputmode="decimal" autocomplete="off"/></div><div class="inv-res"></div></div>':'');
+      row.innerHTML='<div class="it-main"><span class="it-name"></span></div>'+
+        '<div class="inv-fields"><div class="inv-fld"><label>ОСТАТОК, '+p.u.toUpperCase()+'</label><input class="inv-in v-in" inputmode="none" readonly autocomplete="off"/><span class="v-sum"></span></div>'+
+        (p.d?'<div class="inv-fld inv-bd"><label>БОЙ/ПОРЧА</label><input class="inv-in bd-in" inputmode="none" readonly autocomplete="off"/></div>':'')+'</div>';
       row.querySelector('.it-name').textContent=p.n;
       var vi=row.querySelector('.v-in'), sm=row.querySelector('.v-sum'); vi.value=S.v[p.id]||''; vi.classList.toggle('has',has(p.id));
       function showSum(){ var raw=vi.value||'', t=num(raw); sm.textContent=(/.[+\-]/.test(raw.replace(/\s+/g,''))&&t!==null)?'= '+t:''; }
       showSum();
-      row.querySelector('.inv-plus').addEventListener('pointerdown',function(e){ e.preventDefault(); });
-      row.querySelector('.inv-plus').addEventListener('click',function(){ var v=vi.value; if(!v||/[+\-]$/.test(v)){ vi.focus(); return; } vi.value=v+'+'; vi.focus(); try{ vi.setSelectionRange(vi.value.length,vi.value.length); }catch(e){} vi.dispatchEvent(new Event('input')); });
       vi.addEventListener('input',function(){ S.v[p.id]=vi.value; vi.classList.toggle('has',has(p.id)); showSum(); save(); refresh(); });
       var bi=row.querySelector('.bd-in'); if(bi){ bi.value=S.bd[p.id]||''; bi.classList.toggle('has',num(bi.value)!==null); bi.addEventListener('input',function(){ S.bd[p.id]=bi.value; bi.classList.toggle('has',num(bi.value)!==null); save(); }); }
-      if(tea){
-        var gi=row.querySelector('.g-in'), ti=row.querySelector('.t-in'), res=row.querySelector('.inv-res'), box=row.querySelector('.inv-tare');
-        gi.value=S.gross[p.id]||''; ti.value=S.tare[p.id]||'';
-        function calc(){ S.gross[p.id]=gi.value; S.tare[p.id]=ti.value; var a=num(gi.value), t=num(ti.value);
-          if(a!==null&&t!==null){ var r=Math.max(0,Math.round((a-t)*10)/10); res.textContent='= '+r+' гр.'; vi.value=String(r); S.v[p.id]=vi.value; vi.classList.add('has'); showSum(); refresh(); } else res.textContent=''; save(); }
-        gi.addEventListener('input',calc); ti.addEventListener('input',calc);
-        row.querySelector('.inv-tare-btn').addEventListener('click',function(){ box.hidden=!box.hidden; if(!box.hidden){ calc(); } });
-        if(num(S.tare[p.id])!==null) {}
-      }
       sec.appendChild(row); rows.push({p:p,row:row,sec:sec});
     });
     list.appendChild(sec); secs.push(sec);
@@ -427,6 +438,33 @@
   var pills=document.querySelectorAll('#pills .pill');
   pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); apply(); window.scrollTo(0,0); }); });
   refresh();
+
+  // ---------- своя цифровая клавиатура: цифры, запятая, + и − (на iPhone в родной нет плюса) ----------
+  var kp=$('kp'), act=null;
+  function kpSum(){ var raw=act?act.value:'', t=num(raw); $('kp-sum').textContent=(/.[+\-]/.test(raw)&&t!==null)?'= '+t:''; }
+  function setAct(inp){
+    if(act) act.classList.remove('act'); act=inp;
+    if(!inp){ kp.hidden=true; document.body.classList.remove('kp-open'); return; }
+    inp.classList.add('act'); kp.hidden=false; document.body.classList.add('kp-open');
+    var r=inp.closest('.item'); $('kp-name').textContent=r.querySelector('.it-name').textContent+(inp.classList.contains('bd-in')?' · бой/порча':'');
+    kpSum(); setTimeout(function(){ try{ r.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){ r.scrollIntoView(); } },60);
+  }
+  function key(k){
+    if(!act) return; var v=act.value;
+    if(k==='del') v=v.slice(0,-1);
+    else if(k==='+'||k==='-'){ if(v&&/[0-9,.]$/.test(v)) v+=k; else if(v&&/[+\-]$/.test(v)) v=v.slice(0,-1)+k; }
+    else if(k===','){ var last=v.split(/[+\-]/).pop(); if(last.indexOf(',')<0&&last.indexOf('.')<0) v+=(last===''?'0,':','); }
+    else if(/^\d$/.test(k)){ if(v.length<24) v+=k; }
+    act.value=v; act.dispatchEvent(new Event('input')); kpSum();
+  }
+  list.addEventListener('click',function(e){ var i=e.target.closest&&e.target.closest('.inv-in'); if(i) setAct(i); });
+  kp.querySelectorAll('[data-k]').forEach(function(b){ b.addEventListener('click',function(){ key(this.getAttribute('data-k')); }); });
+  $('kp-done').addEventListener('click',function(){ setAct(null); });
+  $('kp-next').addEventListener('click',function(){
+    var all=Array.prototype.filter.call(list.querySelectorAll('.v-in,.bd-in'),function(i){ return i.offsetParent!==null; }), idx=all.indexOf(act);
+    if(idx>-1&&idx<all.length-1) setAct(all[idx+1]); else setAct(null);
+  });
+  document.addEventListener('pointerdown',function(e){ if(kp.hidden) return; if(e.target.closest&&(e.target.closest('#kp')||e.target.closest('.inv-in')||e.target.closest('#modal'))) return; setAct(null); });
 
   // ---------- сборка бланка ----------
   var modal=$('modal'), sheet=$('sheet'), file=null, libP=null, tplP=null;
