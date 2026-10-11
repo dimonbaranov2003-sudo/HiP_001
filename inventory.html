@@ -396,15 +396,6 @@
 <p class="empty" id="empty" hidden>Ничего не найдено</p>
 </main>
 <div class="inv-dock"><span class="inv-prog" id="prog"></span><button class="inv-send" id="send" type="button">Собрать бланк</button></div>
-<div class="inv-kp" id="kp" hidden>
-<div class="kp-top"><span class="kp-name" id="kp-name"></span><button type="button" class="kp-done" id="kp-done">Готово</button></div>
-<div class="kp-line"><span class="kp-expr" id="kp-expr"></span><span class="kp-sum" id="kp-sum"></span></div>
-<div class="kp-grid">
-<button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" class="op" data-k="del">⌫</button>
-<button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" class="op" data-k="+">+</button>
-<button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" class="op" data-k="-">−</button>
-<button type="button" data-k=",">,</button><button type="button" data-k="0">0</button><button type="button" class="next" id="kp-next">Далее</button>
-</div></div>
 <div class="inv-modal" id="modal" hidden><div class="inv-sheet" id="sheet"></div></div>
 <footer class="sig">
   <input type="checkbox" id="sig-toggle" class="sig-input"/>
@@ -429,6 +420,8 @@
     if(!/^[+-]?(?:\d+\.?\d*|\.\d+)(?:[+-](?:\d+\.?\d*|\.\d+))*$/.test(t)) return null;
     var parts=t.match(/[+-]?(?:\d+\.?\d*|\.\d+)/g), sum=0; parts.forEach(function(p){ sum+=parseFloat(p); });
     return Math.round(sum*1000)/1000; }
+  var OPT={ware:1}; // группы, которые считают реже (посуда — раз в месяц): не считаются пропущенными
+  function req(p){ return !OPT[p.g]; }
   function has(id){ return num(S.v[id])!==null; }
   var list=$('list'), rows=[], secs=[], cat='all';
   GROUPS.forEach(function(g){
@@ -437,8 +430,8 @@
     POS.filter(function(p){return p.g===g.k;}).forEach(function(p){
       var tea=p.g==='tea', row=document.createElement('div'); row.className='item'; row.setAttribute('data-id',p.id); row.setAttribute('data-s',norm(p.n+' '+g.t));
       row.innerHTML='<div class="it-main"><span class="it-name"></span><span class="it-expr"></span></div>'+
-        '<div class="inv-fields"><div class="inv-fld"><input class="inv-in v-in" inputmode="none" readonly placeholder="'+p.u+'" autocomplete="off"/></div>'+
-        (p.d?'<div class="inv-fld inv-bd"><input class="inv-in bd-in" inputmode="none" readonly placeholder="бой" autocomplete="off"/></div>':'')+'</div>';
+        '<div class="inv-fields"><div class="inv-fld"><input class="inv-in v-in" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="'+p.u+'" autocomplete="off"/></div>'+
+        (p.d?'<div class="inv-fld inv-bd"><input class="inv-in bd-in" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="бой" autocomplete="off"/></div>':'')+'</div>';
       row.querySelector('.it-name').textContent=p.n;
       var vi=row.querySelector('.v-in'), sm=row.querySelector('.it-expr'); vi.value=S.v[p.id]||''; vi.classList.toggle('has',has(p.id));
       function showSum(){ var raw=(vi.value||'').replace(/\s+/g,''), t=num(raw); sm.textContent=(/.[+\-]/.test(raw)&&t!==null)?raw.replace(/([+\-])/g,' $1 ')+' = '+t:''; }
@@ -450,8 +443,9 @@
     list.appendChild(sec); secs.push(sec);
   });
   function refresh(){
-    var f=POS.filter(function(p){return has(p.id);}).length; $('prog').textContent='Заполнено '+f+' из '+POS.length;
-    secs.forEach(function(sec){ var items=POS.filter(function(p){return p.g===sec.getAttribute('data-g');}); sec.querySelector('.n').textContent=items.filter(function(p){return has(p.id);}).length+'/'+items.length; });
+    var need=POS.filter(req), f=need.filter(function(p){return has(p.id);}).length; $('prog').textContent='Заполнено '+f+' из '+need.length;
+    secs.forEach(function(sec){ var g=sec.getAttribute('data-g'), items=POS.filter(function(p){return p.g===g;}), d=items.filter(function(p){return has(p.id);}).length;
+      sec.querySelector('.n').textContent=OPT[g]?(d?d+'/'+items.length+' · ':'')+'раз в месяц':d+'/'+items.length; });
   }
   function apply(){
     var t=norm($('q').value).split(/\s+/).filter(Boolean), any=false;
@@ -468,34 +462,12 @@
   pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); apply(); window.scrollTo(0,0); }); });
   refresh();
 
-  // ---------- своя цифровая клавиатура: цифры, запятая, + и − (на iPhone в родной нет плюса) ----------
-  var kp=$('kp'), act=null;
-  function kpSum(){ var raw=act?act.value.replace(/\s+/g,''):'', t=num(raw), ex=$('kp-expr');
-    ex.textContent=raw.replace(/([+\-])/g,' $1 '); ex.scrollTop=ex.scrollHeight;
-    $('kp-sum').textContent=(/.[+\-]/.test(raw)&&t!==null)?'= '+t:''; }
-  function setAct(inp){
-    if(act) act.classList.remove('act'); act=inp;
-    if(!inp){ kp.hidden=true; document.body.classList.remove('kp-open'); return; }
-    inp.classList.add('act'); kp.hidden=false; document.body.classList.add('kp-open');
-    var r=inp.closest('.item'); $('kp-name').textContent=r.querySelector('.it-name').textContent+(inp.classList.contains('bd-in')?' · бой/порча':'');
-    kpSum(); setTimeout(function(){ var b=r.getBoundingClientRect(), vis=window.innerHeight-kp.offsetHeight; if(b.bottom>vis-8) window.scrollBy({top:b.bottom-vis+16,behavior:'smooth'}); else if(b.top<56) window.scrollBy({top:b.top-70,behavior:'smooth'}); },60);
-  }
-  function key(k){
-    if(!act) return; var v=act.value;
-    if(k==='del') v=v.slice(0,-1);
-    else if(k==='+'||k==='-'){ if(v&&/[0-9,.]$/.test(v)) v+=k; else if(v&&/[+\-]$/.test(v)) v=v.slice(0,-1)+k; }
-    else if(k===','){ var last=v.split(/[+\-]/).pop(); if(last.indexOf(',')<0&&last.indexOf('.')<0) v+=(last===''?'0,':','); }
-    else if(/^\d$/.test(k)){ if(v.length<24) v+=k; }
-    act.value=v; act.dispatchEvent(new Event('input')); kpSum();
-  }
-  list.addEventListener('click',function(e){ var i=e.target.closest&&e.target.closest('.inv-in'); if(i) setAct(i); });
-  kp.querySelectorAll('[data-k]').forEach(function(b){ b.addEventListener('click',function(){ key(this.getAttribute('data-k')); }); });
-  $('kp-done').addEventListener('click',function(){ setAct(null); });
-  $('kp-next').addEventListener('click',function(){
-    var all=Array.prototype.filter.call(list.querySelectorAll('.v-in,.bd-in'),function(i){ return i.offsetParent!==null; }), idx=all.indexOf(act);
-    if(idx>-1&&idx<all.length-1) setAct(all[idx+1]); else setAct(null);
+  // Enter на клавиатуре — к следующему полю
+  list.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return; var t=e.target; if(!t.classList||!t.classList.contains('inv-in')) return; e.preventDefault();
+    var all=Array.prototype.filter.call(list.querySelectorAll('.inv-in'),function(i){ return i.offsetParent!==null; }), i=all.indexOf(t);
+    if(i>-1&&i<all.length-1) all[i+1].focus(); else t.blur();
   });
-  document.addEventListener('click',function(e){ if(kp.hidden) return; if(e.target.closest&&(e.target.closest('#kp')||e.target.closest('.inv-in')||e.target.closest('#modal'))) return; setAct(null); });
 
   // ---------- сборка бланка ----------
   var modal=$('modal'), sheet=$('sheet'), file=null, libP=null, tplP=null;
@@ -543,10 +515,10 @@
       $('m-copy').onclick=function(){ copyText(tsv(),this); }; $('m-retry').onclick=go; $('m-x').onclick=closeM; });
   }
   $('send').addEventListener('click',function(){
-    var miss=POS.length-POS.filter(function(p){return has(p.id);}).length;
+    var miss=POS.filter(function(p){return req(p)&&!has(p.id);}).length;
     if(!miss){ go(); return; }
-    openM('<h3>Не все остатки заполнены</h3><p>Пустых позиций: '+miss+'. В файле они останутся пустыми.</p><button class="main" id="m-show">К первой пустой</button><button id="m-go">Всё равно собрать</button><button id="m-x">Отмена</button>');
-    $('m-show').onclick=function(){ closeM(); cat='all'; $('q').value=''; pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='all'); }); apply(); var e=rows.filter(function(r){ return !has(r.p.id); })[0]; if(e){ try{ e.row.scrollIntoView({block:'center',behavior:'smooth'}); }catch(x){ e.row.scrollIntoView(); } } };
+    openM('<h3>Не все остатки заполнены</h3><p>Пустых позиций: '+miss+' (посуда не в счёт). В файле они останутся пустыми.</p><button class="main" id="m-show">К первой пустой</button><button id="m-go">Всё равно собрать</button><button id="m-x">Отмена</button>');
+    $('m-show').onclick=function(){ closeM(); cat='all'; $('q').value=''; pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='all'); }); apply(); var e=rows.filter(function(r){ return req(r.p)&&!has(r.p.id); })[0]; if(e){ try{ e.row.scrollIntoView({block:'center',behavior:'smooth'}); }catch(x){ e.row.scrollIntoView(); } } };
     $('m-go').onclick=go; $('m-x').onclick=closeM;
   });
 })();
