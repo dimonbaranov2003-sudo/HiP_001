@@ -230,6 +230,8 @@
   var CLONE_FADE_MS = 380;    // при возврате: плавное растворение клона в настоящую (уже с узором) кнопку — без щелчка
   var CARD_OPACITY = '0.86'; // должно совпадать с opacity у a.card в CSS
   var OVERSCAN = 24;          // запас за края экрана — гарантирует идеальную заливку без шва по краю
+  var FADE_OUT_MS = 140;      // при клике остальные кнопки гаснут быстро и разом — до того, как клон дорастёт до них
+  var GROW_DELAY_MS = 80;     // клон трогается с места чуть позже, когда остальные уже почти погасли
   var FADE_MS = 360;          // длительность угасания/проявления каждого из остальных элементов
   var FADE_STAGGER_MS = 130;  // и шаг между ними — один за другим, а не разом
   var FADE_OUT_BASE_MS = 480; // при уходе: пауза перед первым угасанием — даём кнопке время подрасти
@@ -333,9 +335,9 @@
 
       for(var k = 0; k < fadeOutTargets.length; k++){
         var elOut = fadeOutTargets[k];
-        var delayOut = FADE_OUT_BASE_MS + k * FADE_STAGGER_MS;
+        var delayOut = 0;
         elOut.style.pointerEvents = 'none';
-        elOut.style.transition = 'opacity ' + FADE_MS + 'ms ease ' + delayOut + 'ms';
+        elOut.style.transition = 'opacity ' + FADE_OUT_MS + 'ms ease ' + delayOut + 'ms';
         elOut.style.opacity = '0';
       }
 
@@ -384,7 +386,7 @@
       // форсируем рефлоу, чтобы браузер зафиксировал стартовое состояние
       void clone.offsetHeight;
 
-      requestAnimationFrame(function(){
+      setTimeout(function(){
         requestAnimationFrame(function(){
           clone.style.top = (-OVERSCAN) + 'px';
           clone.style.left = (-OVERSCAN) + 'px';
@@ -407,7 +409,7 @@
 
           setTimeout(goToPage, TOTAL_MS + 60);
         });
-      });
+      }, GROW_DELAY_MS);
     });
   }
 
