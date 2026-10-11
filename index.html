@@ -169,6 +169,13 @@
     border:1px solid var(--bar-line); border-top:0;
   }
   a.card.card-banquet .tea-logo{height:17px;}
+  /* Инвентаризация — обычная кнопка под баром и банкетом, без анимации перелёта */
+  a.card.card-inv{
+    justify-content:center; position:relative;
+    background:rgba(244,236,223,0.58); border:1px solid rgba(255,243,228,0.55); color:#3B2A1C;
+  }
+  .inv-title{font-family:'Manrope',sans-serif; font-weight:800; font-size:.95rem; letter-spacing:.12em; text-transform:uppercase;}
+  a.card.card-inv .card-date{color:#6B5342;}
   /* ---------- Осенняя тема главной ---------- */
   html{background:#B39B85 url("bg-autumn.jpg") center top / cover no-repeat; min-height:100%;}
   body{background:transparent;}
@@ -214,6 +221,13 @@
 <a class="card card-bar card-banquet" href="banquet.html" data-final-logo-height="24" data-final-logo-top="20" data-tile-width="620">
 <span class="card-text-center">
 <img class="tea-logo" src="logo-banquet-wide-light.png" alt="Банкетное меню"/>
+</span>
+<span class="card-arrow-corner">→</span>
+</a>
+<a class="card card-inv" href="inventory.html">
+<span class="card-text-center">
+<span class="inv-title">Инвентаризация</span>
+<span class="card-date">остатки · неделя / месяц</span>
 </span>
 <span class="card-arrow-corner">→</span>
 </a>
