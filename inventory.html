@@ -7,6 +7,7 @@
 <title>Инвента</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&amp;family=Manrope:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
     --bg:#F4ECDF; --surface:#FBF9F8; --surface-2:#F3EDEC; --ink:#332C2C; --muted:#6D6262;
@@ -350,6 +351,7 @@
   .kp-sum{font-size:1.15rem; font-weight:700; white-space:nowrap;}
   body.kp-open main{padding-bottom:340px;}
   .inv-sheet .hint{font-size:.76rem; color:var(--muted); margin:0;}
+  .brand-title{font-family:'Montserrat',sans-serif; font-weight:800; font-size:20px; line-height:30px; letter-spacing:.02em; text-transform:uppercase; color:#332B2B;}
 </style>
 </head>
 <body>
@@ -387,13 +389,11 @@
 <button class="pill" type="button" data-cat="syr">Сиропы</button>
 <button class="pill" type="button" data-cat="spi">Специи</button>
 <button class="pill" type="button" data-cat="ware">Посуда</button>
-<button class="pill" type="button" data-cat="empty">Пустые</button>
 </nav>
 </header>
 <main id="app">
 <div id="list"></div>
 <p class="empty" id="empty" hidden>Ничего не найдено</p>
-<button class="inv-reset" id="reset" type="button">Начать новую инвенту</button>
 </main>
 <div class="inv-dock"><span class="inv-prog" id="prog"></span><button class="inv-send" id="send" type="button">Собрать бланк</button></div>
 <div class="inv-kp" id="kp" hidden>
@@ -419,7 +419,8 @@
   var KEY='inv:v1', MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', TPL='inventa-template.xlsx';
   var S={v:{},bd:{},tare:{},gross:{},who:'',point:'',monthly:false};
   try{ var raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
-  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+  if(S.ts&&Date.now()-S.ts>86400000){ S.v={}; S.bd={}; S.gross={}; } // новая инвента: старые остатки стираются сами
+  function save(){ S.ts=Date.now(); try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
   function $(id){ return document.getElementById(id); }
   function norm(s){ return (s||'').toLowerCase().replace(/ё/g,'е'); }
   function num(x){ // число или сумма: «200+300», «450-50». Хвостовой знак при наборе игнорируется
@@ -462,6 +463,7 @@
     $('empty').hidden=any;
   }
   $('q').addEventListener('input',apply);
+  $('q').addEventListener('focus',function(){ if(this.value){ this.value=''; apply(); } });
   var pills=document.querySelectorAll('#pills .pill');
   pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); apply(); window.scrollTo(0,0); }); });
   refresh();
@@ -543,14 +545,9 @@
   $('send').addEventListener('click',function(){
     var miss=POS.length-POS.filter(function(p){return has(p.id);}).length;
     if(!miss){ go(); return; }
-    openM('<h3>Не все остатки заполнены</h3><p>Пустых позиций: '+miss+'. В файле они останутся пустыми.</p><button class="main" id="m-show">Показать пустые</button><button id="m-go">Всё равно собрать</button><button id="m-x">Отмена</button>');
-    $('m-show').onclick=function(){ closeM(); pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='empty'); }); cat='empty'; apply(); window.scrollTo(0,0); };
+    openM('<h3>Не все остатки заполнены</h3><p>Пустых позиций: '+miss+'. В файле они останутся пустыми.</p><button class="main" id="m-show">К первой пустой</button><button id="m-go">Всё равно собрать</button><button id="m-x">Отмена</button>');
+    $('m-show').onclick=function(){ closeM(); cat='all'; $('q').value=''; pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='all'); }); apply(); var e=rows.filter(function(r){ return !has(r.p.id); })[0]; if(e){ try{ e.row.scrollIntoView({block:'center',behavior:'smooth'}); }catch(x){ e.row.scrollIntoView(); } } };
     $('m-go').onclick=go; $('m-x').onclick=closeM;
-  });
-  $('reset').addEventListener('click',function(){
-    openM('<h3>Начать новую инвенту?</h3><p>Все введённые остатки будут очищены. Вес тары сохранится.</p><button class="main" id="m-ok">Очистить остатки</button><button id="m-x">Отмена</button>');
-    $('m-x').onclick=closeM;
-    $('m-ok').onclick=function(){ S.v={}; S.bd={}; S.gross={}; save(); rows.forEach(function(r){ r.row.querySelectorAll('.v-in,.bd-in,.g-in').forEach(function(i){ i.value=''; i.classList.remove('has'); }); var rs=r.row.querySelector('.inv-res'); if(rs) rs.textContent=''; var sx=r.row.querySelector('.it-expr'); if(sx) sx.textContent=''; }); refresh(); apply(); closeM(); window.scrollTo(0,0); };
   });
 })();
 </script>
