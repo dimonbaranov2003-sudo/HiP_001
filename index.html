@@ -169,13 +169,6 @@
     border:1px solid var(--bar-line); border-top:0;
   }
   a.card.card-banquet .tea-logo{height:17px;}
-  /* Инвентаризация — обычная кнопка под баром и банкетом, без анимации перелёта */
-  a.card.card-inv{
-    justify-content:center; position:relative;
-    background:rgba(244,236,223,0.58); border:1px solid rgba(255,243,228,0.55); color:#3B2A1C;
-  }
-  .inv-title{font-family:'Manrope',sans-serif; font-weight:800; font-size:.95rem; letter-spacing:.12em; text-transform:uppercase;}
-  a.card.card-inv .card-date{color:#6B5342;}
   /* ---------- Осенняя тема главной ---------- */
   html{background:#B39B85 url("bg-autumn.jpg") center top / cover no-repeat; min-height:100%;}
   body{background:transparent;}
@@ -186,6 +179,10 @@
   /* Кнопки главной чуть прозрачные + без стрелок справа */
   a.card{opacity:0.86;}
   a.card .card-arrow-corner{display:none;}
+  /* Чай + инвента — единый светлый блок, как бар + банкет */
+  a.card.card-tea:not(.card-inventory){border-radius:14px 14px 0 0; border:1px solid rgba(107,88,88,0.28); border-bottom-color:rgba(107,88,88,0.5);}
+  a.card.card-inventory{padding:9px 18px; margin-top:-10px; border-radius:0 0 14px 14px; border:1px solid rgba(107,88,88,0.28); border-top:0;}
+  .card-title-text{display:block; font-family:'Fraunces',serif; font-weight:500; font-size:1.15rem; line-height:30px; letter-spacing:-.01em; color:#332C2C; text-align:center;}
 </style>
 </head>
 <body>
@@ -211,6 +208,11 @@
 </span>
 <span class="card-arrow-corner">→</span>
 </a>
+<a class="card card-tea card-inventory" href="inventory.html" data-final-logo-height="30" data-final-logo-top="20" data-tile-width="460">
+<span class="card-text-center">
+<span class="card-title-text">Инвента</span>
+</span>
+</a>
 <a class="card card-bar" href="bar.html" data-final-logo-height="28" data-final-logo-top="20" data-tile-width="420">
 <span class="card-text-center">
 <img class="bar-logo" src="logo-bar-wide-light.png" alt="Барная карта"/>
@@ -221,13 +223,6 @@
 <a class="card card-bar card-banquet" href="banquet.html" data-final-logo-height="24" data-final-logo-top="20" data-tile-width="620">
 <span class="card-text-center">
 <img class="tea-logo" src="logo-banquet-wide-light.png" alt="Банкетное меню"/>
-</span>
-<span class="card-arrow-corner">→</span>
-</a>
-<a class="card card-inv" href="inventory.html">
-<span class="card-text-center">
-<span class="inv-title">Инвентаризация</span>
-<span class="card-date">остатки · неделя / месяц</span>
 </span>
 <span class="card-arrow-corner">→</span>
 </a>
