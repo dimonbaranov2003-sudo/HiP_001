@@ -462,6 +462,15 @@
   pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); apply(); window.scrollTo(0,0); }); });
   refresh();
 
+  // Тап в поле — курсор всегда в конце: дописываешь «+ ещё пачка», а не вставляешь в середину числа
+  function toEnd(el){ var n=el.value.length; try{ el.setSelectionRange(n,n); }catch(e){} }
+  function endSoon(e){
+    var t=e.target; if(!t.classList||!t.classList.contains('inv-in')) return;
+    if(e.type!=='focusin'&&document.activeElement!==t) return;
+    toEnd(t); setTimeout(function(){ toEnd(t); },0); setTimeout(function(){ toEnd(t); },60);
+  }
+  list.addEventListener('focusin',endSoon); list.addEventListener('click',endSoon); list.addEventListener('touchend',endSoon);
+
   // Enter на клавиатуре — к следующему полю
   list.addEventListener('keydown',function(e){
     if(e.key!=='Enter') return; var t=e.target; if(!t.classList||!t.classList.contains('inv-in')) return; e.preventDefault();
