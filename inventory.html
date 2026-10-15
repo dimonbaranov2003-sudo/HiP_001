@@ -3,22 +3,21 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
-<meta content="#F4ECDF" name="theme-color"/>
+<meta content="#241611" name="theme-color"/>
 <title>Инвента</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&amp;family=Manrope:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&amp;family=Manrope:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
-    --bg:#F4ECDF; --surface:#FBF9F8; --surface-2:#F3EDEC; --ink:#332C2C; --muted:#6D6262;
-    --line:#DED4D2; --accent:#B7A8A8; --accent-ink:#6B5858;
+    --bg:#241611; --surface:#241811; --surface-2:#2C2015; --ink:#F4ECDF; --muted:#B49C89;
+    --line:rgba(200,138,78,0.28); --accent:#C88A4E; --accent-ink:#E8B57E;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background-color:var(--bg);
-    background-image:linear-gradient(rgba(244,236,223,0.37), rgba(244,236,223,0.37)), url("bg-chai.jpg");
-    background-size:460px auto, 460px auto;
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
+    background-size:420px auto, 420px auto;
     background-position:top center, top center;
     background-repeat:repeat, repeat;
     color:var(--ink);
@@ -252,7 +251,7 @@
   .pills.scroll{flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;}
   .pills.scroll::-webkit-scrollbar{display:none;}
   button.pill{font-family:'Manrope',sans-serif;}
-  .pill.on{background:var(--accent-ink); border-color:var(--accent-ink); color:var(--bg);}
+  .pill.on{background:var(--accent); border-color:var(--accent); color:var(--bg);}
   .search, .pills{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
   html.entry-veil .search{opacity:0; transform:translateY(10px);}
   .demo-panel{margin-bottom:22px;}
@@ -297,7 +296,7 @@
   .inv-res{margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:.8rem; color:var(--accent-ink); padding-bottom:10px;}
   .inv-reset{display:block; margin:8px auto 0; background:none; border:none; color:var(--muted); font:600 .78rem 'Manrope',sans-serif; text-decoration:underline; padding:10px;}
   main{padding-bottom:130px;}
-  .inv-dock{position:fixed; left:0; right:0; bottom:0; z-index:50; display:flex; gap:12px; align-items:center; justify-content:space-between; padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to bottom, rgba(244,236,223,0), var(--bg) 38%);}
+  .inv-dock{position:fixed; left:0; right:0; bottom:0; z-index:50; display:flex; gap:12px; align-items:center; justify-content:space-between; padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to bottom, rgba(36,22,17,0), var(--bg) 38%);}
   .inv-prog{font-family:'IBM Plex Mono',monospace; font-size:.74rem; color:var(--muted);}
   .inv-send{font:700 .95rem 'Manrope',sans-serif; color:var(--bg); background:var(--accent-ink); border:none; border-radius:12px; padding:13px 20px; box-shadow:0 8px 18px -8px rgba(50,35,35,.55);}
   .inv-modal{position:fixed; inset:0; z-index:100; background:rgba(40,28,28,.45); display:flex; align-items:flex-end; justify-content:center;}
@@ -351,7 +350,45 @@
   .kp-sum{font-size:1.15rem; font-weight:700; white-space:nowrap;}
   body.kp-open main{padding-bottom:340px;}
   .inv-sheet .hint{font-size:.76rem; color:var(--muted); margin:0;}
-  .brand-title{font-family:'Montserrat',sans-serif; font-weight:800; font-size:20px; line-height:30px; letter-spacing:.02em; text-transform:uppercase; color:#332B2B;}
+  .brand-title{font-family:'Manrope',sans-serif; font-weight:800; font-size:20px; line-height:30px; letter-spacing:.02em; text-transform:uppercase; color:#F4ECDF;}
+
+  /* ================= ДИЗАЙН-СИСТЕМА: общая для всех страниц ================= */
+  :root{--sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:28px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px; --h-ctl:46px; --h-pill:30px; --pad-x:16px;}
+  header.topbar{padding:var(--sp-5) var(--pad-x) var(--sp-3);}
+  .brand{gap:var(--sp-2); margin-bottom:var(--sp-3);}
+  .brand h1{margin:0; height:32px; display:flex; align-items:center; justify-content:center;}
+  .brand-logo{height:var(--logo-h); width:auto; display:block;}
+  .brand-title{line-height:32px;}
+  .back-btn{top:-6px;}
+  .nav-row{margin:0;}
+  .search-row, .search{position:relative; margin:0 0 var(--sp-3); padding:0;}
+  .search::before{content:'⌕'; position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.2rem; font-weight:700; color:var(--accent-ink); pointer-events:none;}
+  #search, #ingSearch, .search input{width:100%; height:var(--h-ctl); padding:0 14px 0 42px; border-radius:var(--r-md); border:1.5px solid var(--accent); background:var(--surface); color:var(--ink); font:600 1rem 'Manrope',sans-serif; box-sizing:border-box; outline:none; -webkit-appearance:none; appearance:none;}
+  #search:focus, #ingSearch:focus, .search input:focus{border-color:var(--accent-ink); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);}
+  .pills, .pills.scroll{display:flex; flex-wrap:wrap; justify-content:flex-start; gap:var(--sp-2); overflow:visible; padding:0;}
+  .pill, button.pill{display:inline-flex; align-items:center; gap:6px; height:var(--h-pill); padding:0 12px; border-radius:var(--r-sm); font:700 .72rem 'Manrope',sans-serif; box-sizing:border-box; border:1.5px solid var(--dot,var(--line)); background:var(--surface); color:var(--ink);}
+  main{padding:var(--sp-4) var(--pad-x) var(--sp-6); max-width:560px; margin:0 auto;}
+  .cat-head{display:flex; align-items:center; gap:var(--sp-2); margin:0 2px var(--sp-3);}
+  .cat-head h2{margin:0; font-size:1.08rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-note{font-size:.78rem; line-height:1.45; margin:0 2px var(--sp-3);}
+  section.category, .demo-panel{margin-bottom:var(--sp-5);}
+  details.card, .group, .item, .ing-hit{border-radius:var(--r-md); margin-bottom:10px; border-left-width:4px;}
+  summary.card-head{padding:var(--sp-3) 14px;}
+  .item{padding:var(--sp-3) 14px;}
+  .group-title{padding:var(--sp-3) 14px 4px;}
+  .badges{padding:0 14px var(--sp-3);}
+  .decor-box{margin:0 14px 14px;}
+  .ing-table th:first-child, .ing-table td:first-child, .group th:first-child, .group td:first-child{padding-left:14px;}
+  .ing-table th:last-child, .ing-table td:last-child, .group th:last-child, .group td:last-child{padding-right:14px;}
+  .inv-send, .sc-go{height:var(--h-ctl); padding:0 20px; border-radius:var(--r-md); font:700 .9rem 'Manrope',sans-serif;}
+  .scale-btn{height:40px; padding:0 16px; border-radius:var(--r-md);}
+  .sc-chip{height:42px; padding:0 14px; border-radius:var(--r-md);}
+  .inv-sheet button, .sc-x{border-radius:var(--r-md);}
+  .inv-sheet button{height:var(--h-ctl); padding:0 14px;}
+  .inv-sheet, .sc-sheet{border-radius:var(--r-xl) var(--r-xl) 0 0;}
+  .brand-title{font-size:20px;}
+  main{padding-bottom:130px;}
+  .item{padding:10px 14px;}
 </style>
 </head>
 <body>
@@ -399,14 +436,14 @@
 <div class="inv-modal" id="modal" hidden><div class="inv-sheet" id="sheet"></div></div>
 <footer class="sig">
   <input type="checkbox" id="sig-toggle" class="sig-input"/>
-  <label for="sig-toggle" class="sig-name"><img alt="d.b wish" class="sig-logo" src="sig-wish-tea.png"/></label>
+  <label for="sig-toggle" class="sig-name"><img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/></label>
   <div class="sig-reveal">
     <a class="sig-tg" href="https://t.me/wish_adc" target="_blank" rel="noopener">@wish_adc</a>
   </div>
 </footer>
 <script>
 (function(){
-  var POS=[{"id":"tea07","g":"tea","s":0,"n":"Асамуши сенча","u":"гр.","c":"B7"},{"id":"tea08","g":"tea","s":0,"n":"Ассам","u":"гр.","c":"B8"},{"id":"tea09","g":"tea","s":0,"n":"Брусничный лист с ромашкой","u":"гр.","c":"B9"},{"id":"tea010","g":"tea","s":0,"n":"Витаминный","u":"гр.","c":"B10"},{"id":"tea011","g":"tea","s":0,"n":"Голубая маття","u":"гр.","c":"B11"},{"id":"tea012","g":"tea","s":0,"n":"Да Хун Пао","u":"гр.","c":"B12"},{"id":"tea013","g":"tea","s":0,"n":"Для умников ( для настр.и конц.)","u":"гр.","c":"B13"},{"id":"tea014","g":"tea","s":0,"n":"Дянь хун","u":"гр.","c":"B14"},{"id":"tea015","g":"tea","s":0,"n":"Иван чай","u":"гр.","c":"B15"},{"id":"tea016","g":"tea","s":0,"n":"Инь ло (Серебряные Спирали)","u":"гр.","c":"B16"},{"id":"tea017","g":"tea","s":0,"n":"Китайская роза","u":"гр.","c":"B17"},{"id":"tea018","g":"tea","s":0,"n":"Гречишный (гранулы)","u":"гр.","c":"B18"},{"id":"tea019","g":"tea","s":0,"n":"Ли Чжи Хун Ча","u":"гр.","c":"B19"},{"id":"tea020","g":"tea","s":0,"n":"Липа с мятой","u":"гр.","c":"B20"},{"id":"tea021","g":"tea","s":0,"n":"Масала","u":"гр.","c":"B21"},{"id":"tea022","g":"tea","s":0,"n":"Лесной","u":"гр.","c":"B22"},{"id":"tea023","g":"tea","s":0,"n":"Травяной, Сказка","u":"гр.","c":"B23"},{"id":"tea024","g":"tea","s":0,"n":"Моли Хуа Ча (с цветами Жасмина)","u":"гр.","c":"B24"},{"id":"tea025","g":"tea","s":0,"n":"Молочный улун","u":"гр.","c":"B25"},{"id":"tea026","g":"tea","s":0,"n":"Ройбос","u":"гр.","c":"B26"},{"id":"tea027","g":"tea","s":0,"n":"Ромашка","u":"гр.","c":"B27"},{"id":"tea028","g":"tea","s":0,"n":"Саган Дайля","u":"гр.","c":"B28"},{"id":"tea029","g":"tea","s":0,"n":"Тайский синий","u":"гр.","c":"B29"},{"id":"tea030","g":"tea","s":0,"n":"Те Гуан Инь","u":"гр.","c":"B30"},{"id":"tea031","g":"tea","s":0,"n":"Травяной сбор","u":"гр.","c":"B31"},{"id":"tea032","g":"tea","s":0,"n":"Улун Медовая Дыня","u":"гр.","c":"B32"},{"id":"tea033","g":"tea","s":0,"n":"Хризантема","u":"гр.","c":"B33"},{"id":"tea034","g":"tea","s":0,"n":"Цейлон (плантационный)","u":"гр.","c":"B34"},{"id":"tea035","g":"tea","s":0,"n":"Чень Нянь Пуэр (10 лет)","u":"гр.","c":"B35"},{"id":"tea036","g":"tea","s":0,"n":"Эрл грей","u":"гр.","c":"B36"},{"id":"tea037","g":"tea","s":0,"n":"Ягодный (для настр. на складе)","u":"гр.","c":"B37"},{"id":"tea038","g":"tea","s":0,"n":"Красная Маття (свекла)","u":"гр.","c":"B38"},{"id":"tea039","g":"tea","s":0,"n":"Релакс","u":"гр.","c":"B39"},{"id":"tea040","g":"tea","s":0,"n":"Дикий Пуэр","u":"гр.","c":"B40"},{"id":"tea041","g":"tea","s":0,"n":"Тай Му Дзин Хоу (Золотая обезьяна)","u":"гр.","c":"B41"},{"id":"tea042","g":"tea","s":0,"n":"Таежный","u":"гр.","c":"B42"},{"id":"gro07","g":"gro","s":0,"n":"Пюре Дыня","u":"гр.","c":"E7"},{"id":"gro08","g":"gro","s":0,"n":"Пюре Ревень","u":"гр.","c":"E8"},{"id":"gro09","g":"gro","s":0,"n":"Пюре Клубника-Фейхоа","u":"гр.","c":"E9"},{"id":"gro010","g":"gro","s":0,"n":"Пюре Манго-Маракуйа","u":"гр.","c":"E10"},{"id":"gro011","g":"gro","s":0,"n":"Гель Алое","u":"гр.","c":"E11"},{"id":"gro012","g":"gro","s":0,"n":"Шафран","u":"гр.","c":"E12"},{"id":"gro013","g":"gro","s":0,"n":"Свечи","u":"гр.","c":"E13"},{"id":"syr015","g":"syr","s":0,"n":"Сироп Карамель","u":"гр.","c":"E15"},{"id":"syr016","g":"syr","s":0,"n":"Сироп Кокосовый","u":"гр.","c":"E16"},{"id":"syr017","g":"syr","s":0,"n":"Сироп Маракуйа","u":"гр.","c":"E17"},{"id":"syr018","g":"syr","s":0,"n":"Варенье с шишками и кедр.орехом","u":"гр.","c":"E18"},{"id":"syr019","g":"syr","s":0,"n":"Пюре Черника-Лаванда","u":"гр.","c":"E19"},{"id":"syr020","g":"syr","s":0,"n":"Сироп Шиповника","u":"гр.","c":"E20"},{"id":"syr021","g":"syr","s":0,"n":"Джус-боллы «Йогурт»","u":"гр.","c":"E21"},{"id":"syr022","g":"syr","s":0,"n":"Джус-боллы «Клубника»","u":"гр.","c":"E22"},{"id":"spi024","g":"spi","s":0,"n":"Анис/Бадьян","u":"гр.","c":"E24"},{"id":"spi025","g":"spi","s":0,"n":"Гвоздика","u":"гр.","c":"E25"},{"id":"spi026","g":"spi","s":0,"n":"Кардамон","u":"гр.","c":"E26"},{"id":"spi027","g":"spi","s":0,"n":"Корица палочки","u":"гр.","c":"E27"},{"id":"spi028","g":"spi","s":0,"n":"Мускатный орех","u":"гр.","c":"E28"},{"id":"spi029","g":"spi","s":0,"n":"Елевая хвоя","u":"гр.","c":"E29"},{"id":"spi030","g":"spi","s":0,"n":"Лаванда","u":"гр.","c":"E30"},{"id":"spi031","g":"spi","s":0,"n":"Мята сухая","u":"гр.","c":"E31"},{"id":"spi032","g":"spi","s":0,"n":"Чабрец сухой","u":"гр.","c":"E32"},{"id":"ware035","g":"ware","s":0,"n":"Чайник 1200 мл (Бамбуковый)","u":"шт.","c":"E35"},{"id":"ware036","g":"ware","s":0,"n":"Чайник 800 мл Пружинка (Бамбук)","u":"шт.","c":"E36"},{"id":"ware037","g":"ware","s":0,"n":"Чайник 800 мл Сито","u":"шт.","c":"E37"},{"id":"ware038","g":"ware","s":0,"n":"Подсвечник (обыч сердечки)","u":"шт.","c":"E38"},{"id":"ware039","g":"ware","s":0,"n":"Подсвечник (сердечки + металл)","u":"шт.","c":"E39"},{"id":"ware040","g":"ware","s":0,"n":"Пиала на 100/150 мл","u":"шт.","c":"E40"},{"id":"ware041","g":"ware","s":0,"n":"Гранен стакан для авторских 250 мл","u":"шт.","c":"E41"},{"id":"ware042","g":"ware","s":0,"n":"Бокал для ХЛ 470 мл","u":"шт.","c":"E42"},{"id":"ware043","g":"ware","s":0,"n":"Графин ХЛ 1000 мл","u":"шт.","c":"E43"},{"id":"ware044","g":"ware","s":0,"n":"Гайвань","u":"шт.","c":"E44"}], GROUPS=[{"k":"tea","t":"Чай","dot":"#5C8A63"},{"k":"gro","t":"Бакалея со склада","dot":"#B8763A"},{"k":"syr","t":"Сиропы и спец","dot":"#8C6F9E"},{"k":"spi","t":"Специи со склада","dot":"#A0522D"},{"k":"ware","t":"Посуда и инвентарь","dot":"#5B8DB0"}];
+  var POS=[{"id":"tea07","g":"tea","s":0,"n":"Асамуши сенча","u":"гр.","c":"B7"},{"id":"tea08","g":"tea","s":0,"n":"Ассам","u":"гр.","c":"B8"},{"id":"tea09","g":"tea","s":0,"n":"Брусничный лист с ромашкой","u":"гр.","c":"B9"},{"id":"tea010","g":"tea","s":0,"n":"Витаминный","u":"гр.","c":"B10"},{"id":"tea011","g":"tea","s":0,"n":"Голубая маття","u":"гр.","c":"B11"},{"id":"tea012","g":"tea","s":0,"n":"Да Хун Пао","u":"гр.","c":"B12"},{"id":"tea013","g":"tea","s":0,"n":"Для умников ( для настр.и конц.)","u":"гр.","c":"B13"},{"id":"tea014","g":"tea","s":0,"n":"Дянь хун","u":"гр.","c":"B14"},{"id":"tea015","g":"tea","s":0,"n":"Иван чай","u":"гр.","c":"B15"},{"id":"tea016","g":"tea","s":0,"n":"Инь ло (Серебряные Спирали)","u":"гр.","c":"B16"},{"id":"tea017","g":"tea","s":0,"n":"Китайская роза","u":"гр.","c":"B17"},{"id":"tea018","g":"tea","s":0,"n":"Гречишный (гранулы)","u":"гр.","c":"B18"},{"id":"tea019","g":"tea","s":0,"n":"Ли Чжи Хун Ча","u":"гр.","c":"B19"},{"id":"tea020","g":"tea","s":0,"n":"Липа с мятой","u":"гр.","c":"B20"},{"id":"tea021","g":"tea","s":0,"n":"Масала","u":"гр.","c":"B21"},{"id":"tea022","g":"tea","s":0,"n":"Лесной","u":"гр.","c":"B22"},{"id":"tea023","g":"tea","s":0,"n":"Травяной, Сказка","u":"гр.","c":"B23"},{"id":"tea024","g":"tea","s":0,"n":"Моли Хуа Ча (с цветами Жасмина)","u":"гр.","c":"B24"},{"id":"tea025","g":"tea","s":0,"n":"Молочный улун","u":"гр.","c":"B25"},{"id":"tea026","g":"tea","s":0,"n":"Ройбос","u":"гр.","c":"B26"},{"id":"tea027","g":"tea","s":0,"n":"Ромашка","u":"гр.","c":"B27"},{"id":"tea028","g":"tea","s":0,"n":"Саган Дайля","u":"гр.","c":"B28"},{"id":"tea029","g":"tea","s":0,"n":"Тайский синий","u":"гр.","c":"B29"},{"id":"tea030","g":"tea","s":0,"n":"Те Гуан Инь","u":"гр.","c":"B30"},{"id":"tea031","g":"tea","s":0,"n":"Травяной сбор","u":"гр.","c":"B31"},{"id":"tea032","g":"tea","s":0,"n":"Улун Медовая Дыня","u":"гр.","c":"B32"},{"id":"tea033","g":"tea","s":0,"n":"Хризантема","u":"гр.","c":"B33"},{"id":"tea034","g":"tea","s":0,"n":"Цейлон (плантационный)","u":"гр.","c":"B34"},{"id":"tea035","g":"tea","s":0,"n":"Чень Нянь Пуэр (10 лет)","u":"гр.","c":"B35"},{"id":"tea036","g":"tea","s":0,"n":"Эрл грей","u":"гр.","c":"B36"},{"id":"tea037","g":"tea","s":0,"n":"Ягодный (для настр. на складе)","u":"гр.","c":"B37"},{"id":"tea038","g":"tea","s":0,"n":"Красная Маття (свекла)","u":"гр.","c":"B38"},{"id":"tea039","g":"tea","s":0,"n":"Релакс","u":"гр.","c":"B39"},{"id":"tea040","g":"tea","s":0,"n":"Дикий Пуэр","u":"гр.","c":"B40"},{"id":"tea041","g":"tea","s":0,"n":"Тай Му Дзин Хоу (Золотая обезьяна)","u":"гр.","c":"B41"},{"id":"tea042","g":"tea","s":0,"n":"Таежный","u":"гр.","c":"B42"},{"id":"gro07","g":"gro","s":0,"n":"Пюре Дыня","u":"гр.","c":"E7"},{"id":"gro08","g":"gro","s":0,"n":"Пюре Ревень","u":"гр.","c":"E8"},{"id":"gro09","g":"gro","s":0,"n":"Пюре Клубника-Фейхоа","u":"гр.","c":"E9"},{"id":"gro010","g":"gro","s":0,"n":"Пюре Манго-Маракуйа","u":"гр.","c":"E10"},{"id":"gro011","g":"gro","s":0,"n":"Гель Алое","u":"гр.","c":"E11"},{"id":"gro012","g":"gro","s":0,"n":"Шафран","u":"гр.","c":"E12"},{"id":"gro013","g":"gro","s":0,"n":"Свечи","u":"гр.","c":"E13"},{"id":"syr015","g":"syr","s":0,"n":"Сироп Карамель","u":"гр.","c":"E15"},{"id":"syr016","g":"syr","s":0,"n":"Сироп Кокосовый","u":"гр.","c":"E16"},{"id":"syr017","g":"syr","s":0,"n":"Сироп Маракуйа","u":"гр.","c":"E17"},{"id":"syr018","g":"syr","s":0,"n":"Варенье с шишками и кедр.орехом","u":"гр.","c":"E18"},{"id":"syr019","g":"syr","s":0,"n":"Пюре Черника-Лаванда","u":"гр.","c":"E19"},{"id":"syr020","g":"syr","s":0,"n":"Сироп Шиповника","u":"гр.","c":"E20"},{"id":"syr021","g":"syr","s":0,"n":"Джус-боллы «Йогурт»","u":"гр.","c":"E21"},{"id":"syr022","g":"syr","s":0,"n":"Джус-боллы «Клубника»","u":"гр.","c":"E22"},{"id":"spi024","g":"spi","s":0,"n":"Анис/Бадьян","u":"гр.","c":"E24"},{"id":"spi025","g":"spi","s":0,"n":"Гвоздика","u":"гр.","c":"E25"},{"id":"spi026","g":"spi","s":0,"n":"Кардамон","u":"гр.","c":"E26"},{"id":"spi027","g":"spi","s":0,"n":"Корица палочки","u":"гр.","c":"E27"},{"id":"spi028","g":"spi","s":0,"n":"Мускатный орех","u":"гр.","c":"E28"},{"id":"spi029","g":"spi","s":0,"n":"Елевая хвоя","u":"гр.","c":"E29"},{"id":"spi030","g":"spi","s":0,"n":"Лаванда","u":"гр.","c":"E30"},{"id":"spi031","g":"spi","s":0,"n":"Мята сухая","u":"гр.","c":"E31"},{"id":"spi032","g":"spi","s":0,"n":"Чабрец сухой","u":"гр.","c":"E32"},{"id":"ware035","g":"ware","s":0,"n":"Чайник 1200 мл (Бамбуковый)","u":"шт.","c":"E35"},{"id":"ware036","g":"ware","s":0,"n":"Чайник 800 мл Пружинка (Бамбук)","u":"шт.","c":"E36"},{"id":"ware037","g":"ware","s":0,"n":"Чайник 800 мл Сито","u":"шт.","c":"E37"},{"id":"ware038","g":"ware","s":0,"n":"Подсвечник (обыч сердечки)","u":"шт.","c":"E38"},{"id":"ware039","g":"ware","s":0,"n":"Подсвечник (сердечки + металл)","u":"шт.","c":"E39"},{"id":"ware040","g":"ware","s":0,"n":"Пиала на 100/150 мл","u":"шт.","c":"E40"},{"id":"ware041","g":"ware","s":0,"n":"Гранен стакан для авторских 250 мл","u":"шт.","c":"E41"},{"id":"ware042","g":"ware","s":0,"n":"Бокал для ХЛ 470 мл","u":"шт.","c":"E42"},{"id":"ware043","g":"ware","s":0,"n":"Графин ХЛ 1000 мл","u":"шт.","c":"E43"},{"id":"ware044","g":"ware","s":0,"n":"Гайвань","u":"шт.","c":"E44"}], GROUPS=[{"k":"tea","t":"Чай","dot":"#7FB08A"},{"k":"gro","t":"Бакалея со склада","dot":"#C88A4E"},{"k":"syr","t":"Сиропы и спец","dot":"#B889B8"},{"k":"spi","t":"Специи со склада","dot":"#C27C4A"},{"k":"ware","t":"Посуда и инвентарь","dot":"#8FB7D4"}];
   var KEY='inv:v1', MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', TPL='inventa-template.xlsx';
   var S={v:{},bd:{},tare:{},gross:{},who:'',point:'',monthly:false};
   try{ var raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
@@ -456,10 +493,13 @@
       sec.hidden=!vis; if(vis) any=true; });
     $('empty').hidden=any;
   }
-  $('q').addEventListener('input',apply);
+  $('q').addEventListener('input',function(){
+    if(this.value.trim()!=='' && cat!=='all'){ cat='all'; pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='all'); }); }
+    apply();
+  });
   $('q').addEventListener('focus',function(){ if(this.value){ this.value=''; apply(); } });
   var pills=document.querySelectorAll('#pills .pill');
-  pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); apply(); window.scrollTo(0,0); }); });
+  pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); $('q').value=''; apply(); window.scrollTo(0,0); }); });
   refresh();
 
   // Тап в поле — курсор всегда в конце: дописываешь «+ ещё пачка», а не вставляешь в середину числа
@@ -543,7 +583,7 @@
   var SKINS = {
     chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
     bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
-    inventory: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
+    inventory: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
     home: { bg:'#B39B85', img:'bg-autumn.jpg', tint:'rgba(179,155,133,0)', size:'cover', theme:'#B39B85' }
   };
   var root = document.documentElement;
@@ -571,6 +611,31 @@
     return v;
   }
   function dropVeil(v){ if(v && v.parentNode) v.parentNode.removeChild(v); }
+
+  // ----- Горизонтальное смещение (как открытие чата в Telegram) -----
+  // Поверх страницы въезжает «лист» с цветом и узором целевой страницы, а сама страница
+  // чуть уезжает в противоположную сторону и темнеет. dir: 1 — лист едет справа, -1 — слева.
+  var SLIDE_MS = 520;
+  function slideOut(to, dir, done){
+    var v = makeVeil(to), st = v.style;
+    v.classList.add('nav-sheet');
+    st.opacity = '1'; st.pointerEvents = 'auto';
+    st.transform = 'translateX(' + (dir * 100) + '%)';
+    st.boxShadow = (dir > 0 ? '-14px' : '14px') + ' 0 36px rgba(0,0,0,.18)';
+    var b = document.body;
+    b.style.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1), filter ' + SLIDE_MS + 'ms ease';
+    void v.offsetHeight;
+    st.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1)';
+    requestAnimationFrame(function(){
+      st.transform = 'translateX(0)';
+      b.style.transform = 'translateX(' + (-dir * 20) + '%)'; b.style.filter = 'brightness(.86)';
+    });
+    setTimeout(done, SLIDE_MS + 40);
+  }
+  function resetBody(){
+    var bd = document.body; bd.style.transition = 'none'; bd.style.transform = ''; bd.style.filter = '';
+    void bd.offsetHeight; bd.style.transition = '';
+  }
 
   // ----- Приход -----
   var flag = null;
@@ -608,15 +673,10 @@
     if(leaving) return;
     leaving = true;
     var href = a.getAttribute('href');
-    var veil = makeVeil(to);
-    veil.style.pointerEvents = 'auto';
     if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
     try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); if(to !== 'home') sessionStorage.setItem('lastCard', to); }catch(err){}
-    void veil.offsetHeight;
-    veil.style.transition = 'opacity ' + FADE_IN + 'ms ease';
-    requestAnimationFrame(function(){ veil.style.opacity = '1'; });
     // между картами — replace: в истории остаётся «главная → карта», и стрелка «назад» всегда ведёт на главную
-    setTimeout(function(){ if(to === 'home'){ window.location.href = href; } else { window.location.replace(href); } }, FADE_IN + 40);
+    slideOut(to, to === 'home' ? -1 : 1, function(){ if(to === 'home'){ window.location.href = href; } else { window.location.replace(href); } });
   }
   var links = document.querySelectorAll('a[data-nav]:not(#backBtn)');
   for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
@@ -633,7 +693,11 @@
       if(viaHome && window.history.length > 1){
         e.preventDefault();
         try{ sessionStorage.setItem(KEY, 'home|' + Date.now()); }catch(err){}
-        window.history.back();
+        if(!reduceMotion()){
+          if(leaving) return; leaving = true;
+          if(themeMeta) themeMeta.setAttribute('content', SKINS.home.theme);
+          slideOut('home', -1, function(){ window.history.back(); });
+        } else { window.history.back(); }
       } else {
         onNavClick.call(backBtn, e); // открыли карту напрямую — обычный переход в меню
       }
@@ -644,7 +708,7 @@
   // плавно убираем его и возвращаем свой цвет системной шторки.
   window.addEventListener('pageshow', function(ev){
     if(!ev.persisted) return;
-    leaving = false;
+    leaving = false; resetBody();
     try{ sessionStorage.removeItem(KEY); }catch(err){}
     if(themeMeta && ownTheme) themeMeta.setAttribute('content', ownTheme);
     var old = document.querySelectorAll('.nav-veil');

@@ -276,7 +276,76 @@
   .nav-row{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
   html.entry-veil .nav-row{opacity:0; transform:translateY(10px);}
   html.entry-veil .back-btn svg{opacity:0;}
-</style>
+  /* ---------- Поиск по ингредиенту ---------- */
+  .search-row{position:relative; margin-bottom:10px; transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
+  html.entry-veil .search-row{opacity:0; transform:translateY(10px);}
+  .search-row::before{content:'⌕'; position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.2rem; font-weight:700; color:var(--accent-ink); pointer-events:none;}
+  #ingSearch{width:100%; font-family:'Manrope',sans-serif; font-size:1rem; font-weight:600; padding:12px 14px 12px 42px; border-radius:10px; border:1.5px solid var(--accent); background:var(--surface); color:var(--ink); outline:none; -webkit-appearance:none; appearance:none;}
+  #ingSearch:focus{border-color:var(--accent-ink); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);}
+  #ingSearch::placeholder{color:var(--muted); font-weight:500;}
+  .ing-empty{text-align:center; color:var(--muted); font-size:.85rem; padding:26px 0;}
+  .ing-empty[hidden]{display:none;}
+  /* ---------- Пересчёт премиксов ---------- */
+  .scale-btn{display:block; margin:14px auto 4px; background:none; border:1.5px solid var(--accent); color:var(--accent-ink); font:700 .8rem 'Manrope',sans-serif; border-radius:9px; padding:9px 14px; -webkit-tap-highlight-color:transparent;}
+  .scale-banner{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 12px; padding:9px 12px; border:1px dashed var(--accent); border-radius:9px; font-size:.8rem; font-weight:600; color:var(--accent-ink);}
+  .scale-banner[hidden]{display:none;}
+  .scale-banner button{background:none; border:none; color:var(--muted); font:600 .76rem 'Manrope',sans-serif; text-decoration:underline; padding:4px;}
+  .sc-modal{position:fixed; inset:0; z-index:100; background:rgba(10,6,4,.62); display:flex; align-items:flex-end; justify-content:center;}
+  .sc-modal[hidden]{display:none;}
+  .sc-sheet{width:100%; max-width:520px; background:var(--bg); border:1px solid var(--line); border-bottom:0; border-radius:18px 18px 0 0; padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:12px;}
+  .sc-sheet h3{margin:0; font-family:'Fraunces',serif; font-weight:500; font-size:1.2rem;}
+  .sc-sheet p{margin:0; font-size:.8rem; color:var(--muted); line-height:1.4;}
+  .sc-chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .sc-chip{font:700 .9rem 'Manrope',sans-serif; padding:10px 14px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink);}
+  .sc-chip.on{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  .sc-custom{display:flex; gap:8px;}
+  .sc-custom input{flex:1; min-width:0; font:600 1rem 'IBM Plex Mono',monospace; padding:11px 12px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); -webkit-appearance:none; appearance:none;}
+  .sc-go{font:700 .95rem 'Manrope',sans-serif; padding:12px 16px; border-radius:10px; border:none; background:var(--accent); color:var(--bg);}
+  .sc-x{font:600 .85rem 'Manrope',sans-serif; background:none; border:none; color:var(--muted); padding:8px;}
+
+  /* ================= ДИЗАЙН-СИСТЕМА: общая для всех страниц ================= */
+  :root{--sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:28px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px; --h-ctl:46px; --h-pill:30px; --pad-x:16px;}
+  header.topbar{padding:var(--sp-5) var(--pad-x) var(--sp-3);}
+  .brand{gap:var(--sp-2); margin-bottom:var(--sp-3);}
+  .brand h1{margin:0; height:32px; display:flex; align-items:center; justify-content:center;}
+  .brand-logo{height:var(--logo-h); width:auto; display:block;}
+  .brand-title{line-height:32px;}
+  .back-btn{top:-6px;}
+  .nav-row{margin:0;}
+  .search-row, .search{position:relative; margin:0 0 var(--sp-3); padding:0;}
+  .search::before{content:'⌕'; position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.2rem; font-weight:700; color:var(--accent-ink); pointer-events:none;}
+  #search, #ingSearch, .search input{width:100%; height:var(--h-ctl); padding:0 14px 0 42px; border-radius:var(--r-md); border:1.5px solid var(--accent); background:var(--surface); color:var(--ink); font:600 1rem 'Manrope',sans-serif; box-sizing:border-box; outline:none; -webkit-appearance:none; appearance:none;}
+  #search:focus, #ingSearch:focus, .search input:focus{border-color:var(--accent-ink); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);}
+  .pills, .pills.scroll{display:flex; flex-wrap:wrap; justify-content:flex-start; gap:var(--sp-2); overflow:visible; padding:0;}
+  .pill, button.pill{display:inline-flex; align-items:center; gap:6px; height:var(--h-pill); padding:0 12px; border-radius:var(--r-sm); font:700 .72rem 'Manrope',sans-serif; box-sizing:border-box; border:1.5px solid var(--dot,var(--line)); background:var(--surface); color:var(--ink);}
+  main{padding:var(--sp-4) var(--pad-x) var(--sp-6); max-width:560px; margin:0 auto;}
+  .cat-head{display:flex; align-items:center; gap:var(--sp-2); margin:0 2px var(--sp-3);}
+  .cat-head h2{margin:0; font-size:1.08rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-note{font-size:.78rem; line-height:1.45; margin:0 2px var(--sp-3);}
+  section.category, .demo-panel{margin-bottom:var(--sp-5);}
+  details.card, .group, .item, .ing-hit{border-radius:var(--r-md); margin-bottom:10px; border-left-width:4px;}
+  summary.card-head{padding:var(--sp-3) 14px;}
+  .item{padding:var(--sp-3) 14px;}
+  .group-title{padding:var(--sp-3) 14px 4px;}
+  .badges{padding:0 14px var(--sp-3);}
+  .decor-box{margin:0 14px 14px;}
+  .ing-table th:first-child, .ing-table td:first-child, .group th:first-child, .group td:first-child{padding-left:14px;}
+  .ing-table th:last-child, .ing-table td:last-child, .group th:last-child, .group td:last-child{padding-right:14px;}
+  .inv-send, .sc-go{height:var(--h-ctl); padding:0 20px; border-radius:var(--r-md); font:700 .9rem 'Manrope',sans-serif;}
+  .scale-btn{height:40px; padding:0 16px; border-radius:var(--r-md);}
+  .sc-chip{height:42px; padding:0 14px; border-radius:var(--r-md);}
+  .inv-sheet button, .sc-x{border-radius:var(--r-md);}
+  .inv-sheet button{height:var(--h-ctl); padding:0 14px;}
+  .inv-sheet, .sc-sheet{border-radius:var(--r-xl) var(--r-xl) 0 0;}
+  .brand{--logo-h:27px;}
+  .cat-head h2{font-weight:700;}
+  /* поиск по месту: показываем все разделы, но только подходящие карточки */
+  body.ing-on main .demo-panel{display:block !important;}
+  body.ing-on main .demo-panel.js-empty{display:none !important;}
+  details.card.js-hidden{display:none !important;}
+  body.ing-on .cat-note, body.ing-on .scale-btn, body.ing-on .scale-banner{display:none !important;}
+  .card-name .hit{display:block; margin-top:3px; font-family:'Manrope',sans-serif; font-size:.74rem; font-weight:600; font-style:normal; color:var(--accent-ink); line-height:1.35;}
+</style></style>
 </head>
 <body>
 <script>
@@ -309,6 +378,7 @@
 <a class="nav-link" href="chai.html" data-nav="chai" aria-label="Чайная карта"><span class="nav-logo" role="img" aria-label="Чайная карта"></span><span class="nav-arr">→</span></a>
 </nav>
 </div>
+<div class="search-row"><input id="ingSearch" type="text" autocomplete="off" placeholder="Найти по ингредиенту…"/></div>
 <nav class="pills">
 <label class="pill" for="tab-sets">Сеты</label>
 <label class="pill" for="tab-cocktail">Коктейли</label>
@@ -379,6 +449,7 @@
 <section class="demo-panel" data-cat="premix">
 <div class="cat-head"><span class="dot"></span><h2>Премиксы Б/А</h2><span class="n">4</span></div>
 <p class="cat-note">В премиксе только основа: без воды, льда, украшений. Перед розливом бутылку встряхнуть, хранить в холодильнике.</p>
+<div class="scale-banner" id="scBanner" hidden><span id="scTxt"></span><button type="button" id="scReset">Сбросить</button></div>
 <details class="card" style="--dot:#D4687A">
 <summary class="card-head"><span class="card-name">Малина-Гранат<span class="prep-note"> · 1 л = 5 порций</span></span><span class="chev">⌄</span></summary>
 <div class="card-content"><div class="card-content-inner">
@@ -408,6 +479,7 @@
 <div class="decor-box"><div class="decor-title">Сборка 1 лимонада</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">150 мл</span></li><li><span class="decor-name">Лёд п/ф</span><span class="decor-val">200 г</span></li><li><span class="decor-name">Газ-вода</span><span class="decor-val">до 1000 мл</span></li><li><span class="decor-name">Огурец св. (пробить в блендере)</span><span class="decor-val">120 г</span></li><li><span class="decor-name">Мята св. (украшение)</span><span class="decor-val">2 г</span></li></ul></div>
 
 </div></div></details>
+<button type="button" class="scale-btn" id="scBtn">⚖ Пересчитать под другой объём</button>
 </section>
 <section class="demo-panel" data-cat="calc">
 <div class="cat-head"><span class="dot"></span><h2>Калькулятор</h2></div>
@@ -461,6 +533,7 @@
 
 <button type="button" class="calc-reset" id="calcReset">Сбросить</button>
 </section>
+<div class="ing-empty" id="ingEmpty" hidden>Такого ингредиента нет ни в одной позиции</div>
 </main>
 <footer>
   <div class="foot-date">Актуально на 05.10.2026</div>
@@ -669,6 +742,31 @@
   }
   function dropVeil(v){ if(v && v.parentNode) v.parentNode.removeChild(v); }
 
+  // ----- Горизонтальное смещение (как открытие чата в Telegram) -----
+  // Поверх страницы въезжает «лист» с цветом и узором целевой страницы, а сама страница
+  // чуть уезжает в противоположную сторону и темнеет. dir: 1 — лист едет справа, -1 — слева.
+  var SLIDE_MS = 520;
+  function slideOut(to, dir, done){
+    var v = makeVeil(to), st = v.style;
+    v.classList.add('nav-sheet');
+    st.opacity = '1'; st.pointerEvents = 'auto';
+    st.transform = 'translateX(' + (dir * 100) + '%)';
+    st.boxShadow = (dir > 0 ? '-14px' : '14px') + ' 0 36px rgba(0,0,0,.18)';
+    var b = document.body;
+    b.style.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1), filter ' + SLIDE_MS + 'ms ease';
+    void v.offsetHeight;
+    st.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1)';
+    requestAnimationFrame(function(){
+      st.transform = 'translateX(0)';
+      b.style.transform = 'translateX(' + (-dir * 20) + '%)'; b.style.filter = 'brightness(.86)';
+    });
+    setTimeout(done, SLIDE_MS + 40);
+  }
+  function resetBody(){
+    var bd = document.body; bd.style.transition = 'none'; bd.style.transform = ''; bd.style.filter = '';
+    void bd.offsetHeight; bd.style.transition = '';
+  }
+
   // ----- Приход -----
   var flag = null;
   try{ flag = sessionStorage.getItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
@@ -705,15 +803,10 @@
     if(leaving) return;
     leaving = true;
     var href = a.getAttribute('href');
-    var veil = makeVeil(to);
-    veil.style.pointerEvents = 'auto';
     if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
     try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); if(to !== 'home') sessionStorage.setItem('lastCard', to); }catch(err){}
-    void veil.offsetHeight;
-    veil.style.transition = 'opacity ' + FADE_IN + 'ms ease';
-    requestAnimationFrame(function(){ veil.style.opacity = '1'; });
     // между картами — replace: в истории остаётся «главная → карта», и стрелка «назад» всегда ведёт на главную
-    setTimeout(function(){ if(to === 'home'){ window.location.href = href; } else { window.location.replace(href); } }, FADE_IN + 40);
+    slideOut(to, to === 'home' ? -1 : 1, function(){ if(to === 'home'){ window.location.href = href; } else { window.location.replace(href); } });
   }
   var links = document.querySelectorAll('a[data-nav]:not(#backBtn)');
   for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
@@ -741,7 +834,7 @@
   // плавно убираем его и возвращаем свой цвет системной шторки.
   window.addEventListener('pageshow', function(ev){
     if(!ev.persisted) return;
-    leaving = false;
+    leaving = false; resetBody();
     try{ sessionStorage.removeItem(KEY); }catch(err){}
     if(themeMeta && ownTheme) themeMeta.setAttribute('content', ownTheme);
     var old = document.querySelectorAll('.nav-veil');
@@ -754,6 +847,101 @@
       })(old[j]);
     }
   });
+})();
+</script>
+<div class="sc-modal" id="scModal" hidden><div class="sc-sheet">
+<h3>Пересчёт под объём</h3>
+<p>В карте рецепты рассчитаны на бутылку 1 л (Маракуя-Роза — на 900 мл). Выбери, сколько готовим, и граммовки в премиксах пересчитаются.</p>
+<div class="sc-chips" id="scChips"></div>
+<div class="sc-custom"><input id="scIn" type="text" inputmode="decimal" autocomplete="off" placeholder="Другой объём, л"/><button type="button" class="sc-go" id="scGo">Пересчитать</button></div>
+<button type="button" class="sc-x" id="scX">Отмена</button>
+</div></div>
+<script>
+(function(){
+  // ---------- Поиск по ингредиенту: карточки фильтруются прямо на месте, как в чайной ----------
+  var inp=document.getElementById('ingSearch'), empty=document.getElementById('ingEmpty');
+  if(!inp) return;
+  function norm(s){ return (s||'').toLowerCase().replace(/ё/g,'е'); }
+  var items=[], panels=document.querySelectorAll('.demo-panel[data-cat]');
+  panels.forEach(function(panel){
+    panel.querySelectorAll('details.card').forEach(function(card){
+      var c=card.querySelector('.card-name').cloneNode(true), pn=c.querySelector('.prep-note'); if(pn) pn.remove();
+      var rows=[];
+      card.querySelectorAll('.ing-table').forEach(function(t){
+        var heads=Array.prototype.map.call(t.querySelectorAll('thead th'),function(th){ return th.textContent.trim().toLowerCase(); });
+        t.querySelectorAll('tbody tr').forEach(function(tr){
+          if(tr.classList.contains('total')) return; var tds=tr.querySelectorAll('td'); if(tds.length<2) return;
+          var parts=[]; for(var i=1;i<tds.length;i++){ parts.push((heads[i]||'')+' '+tds[i].textContent.trim()); }
+          rows.push({n:tds[0].textContent.trim(), a:parts.join(' · ')});
+        });
+      });
+      card.querySelectorAll('.decor-list li').forEach(function(li){
+        var a=li.querySelector('.decor-name'), v=li.querySelector('.decor-val'); if(!a) return;
+        var n=a.textContent.trim(); if(/^(премикс|подача)$/i.test(n)) return;
+        rows.push({n:n, a:'в сборке '+(v?v.textContent.trim():'')});
+      });
+      items.push({card:card, name:norm(c.textContent), rows:rows});
+    });
+  });
+  function render(){
+    var tokens=norm(inp.value.trim()).split(/\s+/).filter(Boolean), on=tokens.length>0, any=false;
+    document.body.classList.toggle('ing-on',on);
+    items.forEach(function(it){
+      var nm=it.card.querySelector('.card-name'), old=nm.querySelector('.hit'); if(old) old.remove();
+      if(!on){ it.card.classList.remove('js-hidden'); return; }
+      var hay=it.name+' '+it.rows.map(function(r){ return norm(r.n); }).join(' ');
+      var ok=tokens.every(function(t){ return hay.indexOf(t)>-1; });
+      it.card.classList.toggle('js-hidden',!ok);
+      if(!ok) return; any=true;
+      var hits=it.rows.filter(function(r){ var k=norm(r.n); return tokens.some(function(t){ return k.indexOf(t)>-1; }); });
+      if(hits.length){ var h=document.createElement('span'); h.className='hit'; h.textContent='В составе: '+hits.map(function(r){ return r.n+' — '+r.a; }).join(' · '); nm.appendChild(h); }
+    });
+    panels.forEach(function(p){ p.classList.toggle('js-empty', on && !p.querySelector('details.card:not(.js-hidden)')); });
+    if(empty) empty.hidden=!(on&&!any);
+  }
+  inp.addEventListener('input',render);
+  inp.addEventListener('focus',function(){ if(inp.value){ inp.value=''; render(); } });
+  document.querySelectorAll('input.tab-radio').forEach(function(r){ r.addEventListener('change',function(){ if(inp.value){ inp.value=''; render(); } }); });
+})();
+(function(){
+  // ---------- Пересчёт премиксов под выбранный объём ----------
+  var panel=document.querySelector('.demo-panel[data-cat="premix"]'), btn=document.getElementById('scBtn');
+  if(!panel||!btn) return;
+  var cards=Array.prototype.slice.call(panel.querySelectorAll('details.card')), cur=0;
+  var modal=document.getElementById('scModal'), chips=document.getElementById('scChips'), inp=document.getElementById('scIn'), banner=document.getElementById('scBanner'), txt=document.getElementById('scTxt');
+  function fmt(x){ return String(Math.round(x*10)/10).replace('.',','); }
+  function vol(ml){ return ml%1000===0 ? (ml/1000)+' л' : (ml>=1000 ? fmt(ml/1000)+' л' : ml+' мл'); }
+  cards.forEach(function(c){
+    var bd=c.querySelector('.badge'), m=bd&&bd.textContent.match(/(\d+)\s*мл/); c._base=m?+m[1]:1000;
+    c._cells=[]; c.querySelectorAll('.ing-table tbody tr').forEach(function(tr){ var td=tr.children[2]; if(td) c._cells.push([td,td.textContent]); });
+    var th=c.querySelectorAll('.ing-table thead th')[2]; c._th=th?[th,th.textContent]:null;
+    c._badge=bd?[bd,bd.textContent]:null;
+    var pn=c.querySelector('.prep-note'); c._pn=pn?[pn,pn.textContent]:null;
+  });
+  function apply(ml){
+    cur=ml;
+    cards.forEach(function(c){
+      var f=cur?cur/c._base:1;
+      c._cells.forEach(function(p){ var m=p[1].match(/^\s*(\d+(?:[.,]\d+)?)(.*)$/); p[0].textContent=(cur&&m)?fmt(parseFloat(m[1].replace(',','.'))*f)+m[2]:p[1]; });
+      if(c._th) c._th[0].textContent=cur?'На '+vol(cur):c._th[1];
+      if(c._badge) c._badge[0].textContent=cur?'Объём '+vol(cur):c._badge[1];
+      if(c._pn){ var m2=c._pn[1].match(/(\d+)\s*(?:л|мл)\s*=\s*(\d+)\s*порци/); c._pn[0].textContent=(cur&&m2)?' · '+vol(cur)+' = '+fmt(parseInt(m2[2],10)*f)+' порц.':c._pn[1]; }
+    });
+    banner.hidden=!cur; txt.textContent=cur?'Пересчитано под '+vol(cur)+' (рецепты даны на бутылку 1 л)':'';
+    btn.textContent=cur?'⚖ Объём: '+vol(cur)+' · изменить':'⚖ Пересчитать под другой объём';
+  }
+  var PRE=[500,1000,2000,3000,5000,10000];
+  PRE.forEach(function(ml){ var b=document.createElement('button'); b.type='button'; b.className='sc-chip'; b.textContent=vol(ml); b.addEventListener('click',function(){ apply(ml===1000?0:ml); close(); }); b.setAttribute('data-ml',ml); chips.appendChild(b); });
+  function open(){ chips.querySelectorAll('.sc-chip').forEach(function(b){ b.classList.toggle('on',(+b.getAttribute('data-ml')===(cur||1000))); }); inp.value=''; modal.hidden=false; }
+  function close(){ modal.hidden=true; }
+  btn.addEventListener('click',open);
+  document.getElementById('scX').addEventListener('click',close);
+  modal.addEventListener('click',function(e){ if(e.target===modal) close(); });
+  document.getElementById('scGo').addEventListener('click',function(){
+    var l=parseFloat(String(inp.value).replace(',','.')); if(!isFinite(l)||l<=0){ inp.focus(); return; }
+    apply(Math.max(100,Math.min(100000,Math.round(l*1000)))); close();
+  });
+  document.getElementById('scReset').addEventListener('click',function(){ apply(0); });
 })();
 </script>
 </body>
