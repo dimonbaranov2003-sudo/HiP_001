@@ -944,7 +944,7 @@
           card.querySelectorAll('.ing-table tbody tr').forEach(function(tr){ var tds=tr.querySelectorAll('td'); if(tds.length<2||tr.classList.contains('total')) return; rows.push({n:tds[0].textContent.trim(), a:tds[1].textContent.trim()}); });
           card.querySelectorAll('.decor-list li').forEach(function(li){ var a=li.querySelector('.decor-name'), v=li.querySelector('.decor-val'); if(a&&!/^(премикс|подача)$/i.test(a.textContent.trim())) rows.push({n:a.textContent.trim(), a:v?v.textContent.trim():''}); });
           var holder=card.closest('[style*="--dot"]'), dot=card.style.getPropertyValue('--dot')||(holder?holder.style.getPropertyValue('--dot'):'');
-          DB.push({kind:kind, card:card, name:norm(c.textContent), rows:rows, dot:dot.trim()});
+          DB.push({kind:kind, card:card, name:norm(c.textContent+' '+(card.getAttribute('data-tags')||'')), rows:rows, dot:dot.trim()});
         });
       });
       return DB;

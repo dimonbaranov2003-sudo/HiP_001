@@ -346,8 +346,9 @@
   body.ing-on .cat-note, body.ing-on .scale-btn, body.ing-on .scale-banner{display:none !important;}
   .card-name .hit{display:block; margin-top:3px; font-family:'Manrope',sans-serif; font-size:.74rem; font-weight:600; font-style:normal; color:var(--accent-ink); line-height:1.35;}
   /* метка «сезонный» */
-  .season-tag{display:inline-block; margin-left:8px; padding:1px 6px; border-radius:4px; background:var(--dot); color:var(--bg); font:700 .58rem/1.5 'IBM Plex Mono',monospace; letter-spacing:.05em; text-transform:uppercase; vertical-align:2px;}
+  .season-tag{flex:0 0 auto; display:inline-flex; align-items:center; height:20px; margin:0 var(--sp-2); padding:0 var(--sp-2); border-radius:var(--r-sm); background:var(--dot); color:var(--bg); font:700 .62rem/1 'Manrope',sans-serif; letter-spacing:.06em; text-transform:uppercase;}
   .badge.season{background:var(--dot); color:var(--bg);}
+  .prep-note.stack{display:block; margin-top:2px;}
 </style>
 </head>
 <body>
@@ -448,8 +449,8 @@
 <div class="decor-box"><div class="decor-title">Сборка 1 коктейля</div><ul class="decor-list"><li><span class="decor-name">Премикс</span><span class="decor-val">95 мл</span></li><li><span class="decor-name">Лёд п/ф (в хайбол)</span><span class="decor-val">100 г</span></li><li><span class="decor-name">Лимонад ПЭТ д/коктейлей (кола)</span><span class="decor-val">150 мл</span></li><li><span class="decor-name">Лимон (украшение)</span><span class="decor-val">15 г</span></li></ul></div>
 <p class="card-note">Хайбол со льдом, налить премикс, долить колу доверху, аккуратно размешать коктейльной ложкой, украсить лимоном.</p>
 </div></div></details>
-<details class="card" style="--dot:#C45B7A">
-<summary class="card-head"><span class="card-name">Имбирно-гранатовый сауэр<span class="prep-note"> · 950 мл = 10 порций</span><span class="season-tag">сезонный</span></span><span class="chev">⌄</span></summary>
+<details class="card" style="--dot:#C45B7A" data-tags="сезонный">
+<summary class="card-head"><span class="card-name">Имбирно-гранатовый сауэр<span class="prep-note stack">950 мл = 10 порций</span></span><span class="season-tag">Сезонный</span><span class="chev">⌄</span></summary>
 <div class="card-content"><div class="card-content-inner">
 <div class="badges"><span class="badge">Бутылка 1000мл</span><span class="badge">В шейкер</span><span class="badge">Пенообразователь в шейкер</span><span class="badge season">Сезонный</span></div>
 <table class="ing-table"><thead><tr><th>Ингредиент</th><th>На 1 коктейль</th><th>На бутылку</th></tr></thead><tbody><tr><td class="ing-name">Джин Хопперс Мандарин и Розмарин</td><td class="ing-amt">45мл</td><td class="ing-amt">450мл</td></tr><tr><td class="ing-name">Ликёр Трипл Сек</td><td class="ing-amt">15мл</td><td class="ing-amt">150мл</td></tr><tr><td class="ing-name">Сироп Монин гранатовый</td><td class="ing-amt">10мл</td><td class="ing-amt">100мл</td></tr><tr><td class="ing-name">Наршараб микс ПФ</td><td class="ing-amt">10мл</td><td class="ing-amt">100мл</td></tr><tr><td class="ing-name">Сироп Монин имбирный</td><td class="ing-amt">5мл</td><td class="ing-amt">50мл</td></tr><tr><td class="ing-name">Лимонная основа</td><td class="ing-amt">10мл</td><td class="ing-amt">100мл</td></tr><tr class="total"><td class="ing-name">Итого премикса</td><td class="ing-amt">95мл</td><td class="ing-amt">950мл</td></tr></tbody></table>
@@ -891,7 +892,7 @@
         var n=a.textContent.trim(); if(/^(премикс|подача)$/i.test(n)) return;
         rows.push({n:n, a:'в сборке '+(v?v.textContent.trim():'')});
       });
-      items.push({card:card, name:norm(c.textContent), rows:rows});
+      items.push({card:card, name:norm(c.textContent+' '+(card.getAttribute('data-tags')||'')), rows:rows});
     });
   });
   function render(){
